@@ -112,3 +112,49 @@ export async function GET(request: Request) {
   }
 }
 
+export async function DELETE(request: Request) {
+  try {
+    const { searchParams } = new URL(request.url);
+    const userId = searchParams.get('userId');
+
+    if (!userId) {
+      return NextResponse.json(
+        { error: 'UserId is required' },
+        { status: 400 }
+      );
+    }
+
+    // 사용자 프로필 찾기
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+      include: {
+        profile: {
+          include: {
+            children: true,
+          },
+        },
+      },
+    });
+
+    if (user?.profile) {
+      // 자녀 정보 삭제
+      await prisma.child.deleteMany({
+        where: { profileId: user.profile.id },
+      });
+
+      // 프로필 삭제
+      await prisma.userProfile.delete({
+        where: { id: user.profile.id },
+      });
+    }
+
+    return NextResponse.json({ success: true, message: 'Profile deleted successfully' });
+  } catch (error) {
+    console.error('Error deleting profile:', error);
+    return NextResponse.json(
+      { error: 'Failed to delete profile' },
+      { status: 500 }
+    );
+  }
+}
+

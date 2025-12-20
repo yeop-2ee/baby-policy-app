@@ -5,6 +5,7 @@ import { useQuery } from '@tanstack/react-query';
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
 import { Navbar } from '@/components/Navbar';
+import { Chatbot } from '@/components/Chatbot';
 import { FiSearch, FiCalendar, FiTrendingUp, FiUsers, FiFileText, FiAlertCircle, FiExternalLink, FiBookmark } from 'react-icons/fi';
 import { calculateDDay, formatCurrency } from '@/lib/utils';
 import { getUserId, getUserProfile, getBookmarks, saveBookmarks, saveUserProfile } from '@/lib/storage';
@@ -427,6 +428,7 @@ export default function Home() {
       </main>
 
       <Navbar />
+      <Chatbot />
     </div>
   );
 }

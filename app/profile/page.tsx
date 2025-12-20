@@ -3,9 +3,9 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { Navbar } from '@/components/Navbar';
-import { FiArrowLeft, FiPlus, FiX } from 'react-icons/fi';
+import { FiArrowLeft, FiPlus, FiX, FiTrash2 } from 'react-icons/fi';
 import Link from 'next/link';
-import { getUserId, saveUserProfile, getUserProfile } from '@/lib/storage';
+import { getUserId, saveUserProfile, getUserProfile, clearUserData } from '@/lib/storage';
 
 export default function ProfilePage() {
   const router = useRouter();
@@ -172,6 +172,54 @@ export default function ProfilePage() {
     const updated = [...children];
     updated[index][field] = value;
     setChildren(updated);
+  };
+
+  // 프로필 초기화 함수
+  const handleResetProfile = async () => {
+    // 확인 다이얼로그
+    const confirmed = window.confirm(
+      '프로필을 초기화하시겠습니까?\n\n모든 프로필 정보(거주지, 소득, 자녀 정보 등)가 삭제됩니다.\n이 작업은 되돌릴 수 없습니다.'
+    );
+
+    if (!confirmed) return;
+
+    try {
+      const userId = getUserId();
+
+      // API에서 프로필 삭제
+      const response = await fetch(`/api/profile?userId=${userId}`, {
+        method: 'DELETE',
+      });
+
+      if (!response.ok) {
+        throw new Error('프로필 초기화에 실패했습니다.');
+      }
+
+      // localStorage에서 프로필 정보 삭제
+      clearUserData();
+
+      // 폼 초기화
+      setFormData({
+        city: '',
+        district: '',
+        neighborhood: '',
+        incomeLevel: '',
+        childCount: 0,
+        dualIncome: false,
+        multiChild: false,
+      });
+      setChildren([]);
+
+      // 커스텀 이벤트 발생 (홈 페이지에서 감지)
+      if (typeof window !== 'undefined') {
+        window.dispatchEvent(new CustomEvent('profileSaved', { detail: null }));
+      }
+
+      alert('프로필이 초기화되었습니다.');
+    } catch (error) {
+      console.error('Error resetting profile:', error);
+      alert('프로필 초기화 중 오류가 발생했습니다.');
+    }
   };
 
   return (
@@ -367,11 +415,28 @@ export default function ProfilePage() {
           {/* 저장 버튼 */}
           <button
             type="submit"
-            className="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors"
+            className="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors mb-4"
           >
             프로필 저장하기
           </button>
         </form>
+        )}
+
+        {/* 프로필 초기화 버튼 */}
+        {!isLoading && (
+          <div className="mt-6 pt-6 border-t border-gray-200">
+            <button
+              type="button"
+              onClick={handleResetProfile}
+              className="w-full flex items-center justify-center gap-2 bg-red-50 text-red-600 py-3 rounded-lg font-semibold hover:bg-red-100 transition-colors border border-red-200"
+            >
+              <FiTrash2 className="w-5 h-5" />
+              프로필 초기화
+            </button>
+            <p className="text-xs text-gray-500 text-center mt-2">
+              모든 프로필 정보를 삭제합니다
+            </p>
+          </div>
         )}
       </main>
 
