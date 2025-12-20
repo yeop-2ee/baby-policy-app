@@ -17,6 +17,10 @@ export default function ProfilePage() {
     childCount: 0,
     dualIncome: false,
     multiChild: false,
+    hasChildren: false, // 출산 여부
+    isPregnant: false, // 임신 여부
+    pregnancyWeek: 0, // 임신 주수
+    planningPregnancy: false, // 출산 계획 여부
   });
   const [children, setChildren] = useState<Array<{ name: string; birthDate: string }>>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -37,6 +41,10 @@ export default function ProfilePage() {
           childCount: savedProfile.childCount || 0,
           dualIncome: savedProfile.dualIncome || false,
           multiChild: savedProfile.multiChild || false,
+          hasChildren: savedProfile.hasChildren || false,
+          isPregnant: savedProfile.isPregnant || false,
+          pregnancyWeek: savedProfile.pregnancyWeek || 0,
+          planningPregnancy: savedProfile.planningPregnancy || false,
         });
         if (savedProfile.children) {
           setChildren(savedProfile.children.map((child: any) => ({
@@ -61,6 +69,10 @@ export default function ProfilePage() {
               childCount: profile.childCount || 0,
               dualIncome: profile.dualIncome || false,
               multiChild: profile.multiChild || false,
+              hasChildren: profile.hasChildren || false,
+              isPregnant: profile.isPregnant || false,
+              pregnancyWeek: profile.pregnancyWeek || 0,
+              planningPregnancy: profile.planningPregnancy || false,
             });
             if (profile.children && profile.children.length > 0) {
               setChildren(profile.children.map((child: any) => ({
@@ -108,9 +120,13 @@ export default function ProfilePage() {
           district: formData.district,
           neighborhood: formData.neighborhood,
           incomeLevel: formData.incomeLevel,
-          childCount: formData.childCount,
+          childCount: formData.hasChildren ? (children.length || formData.childCount) : 0,
           dualIncome: formData.dualIncome,
-          children: children,
+          hasChildren: formData.hasChildren,
+          isPregnant: formData.isPregnant,
+          pregnancyWeek: formData.pregnancyWeek || null,
+          planningPregnancy: formData.planningPregnancy,
+          children: formData.hasChildren ? children : [],
         }),
       });
 
@@ -126,10 +142,14 @@ export default function ProfilePage() {
         district: formData.district,
         neighborhood: formData.neighborhood || '',
         incomeLevel: formData.incomeLevel,
-        childCount: children.length,
+        childCount: formData.hasChildren ? children.length : 0,
         dualIncome: formData.dualIncome,
-        multiChild: children.length >= 3,
-        children: children,
+        multiChild: formData.hasChildren && children.length >= 3,
+        hasChildren: formData.hasChildren,
+        isPregnant: formData.isPregnant,
+        pregnancyWeek: formData.pregnancyWeek,
+        planningPregnancy: formData.planningPregnancy,
+        children: formData.hasChildren ? children : [],
         profileId: result.profile?.id,
       };
       
@@ -207,6 +227,10 @@ export default function ProfilePage() {
         childCount: 0,
         dualIncome: false,
         multiChild: false,
+        hasChildren: false,
+        isPregnant: false,
+        pregnancyWeek: 0,
+        planningPregnancy: false,
       });
       setChildren([]);
 
@@ -299,6 +323,127 @@ export default function ProfilePage() {
             </div>
           </section>
 
+          {/* 출산 상태 */}
+          <section className="bg-white rounded-xl p-6 shadow-sm">
+            <h2 className="text-lg font-bold text-gray-900 mb-4">출산 상태</h2>
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  현재 상태
+                </label>
+                <div className="flex gap-4">
+                  <label className="flex items-center">
+                    <input
+                      type="radio"
+                      name="hasChildren"
+                      checked={formData.hasChildren === true}
+                      onChange={() => {
+                        setFormData({
+                          ...formData,
+                          hasChildren: true,
+                          isPregnant: false,
+                          pregnancyWeek: 0,
+                          planningPregnancy: false,
+                        });
+                        setChildren([]);
+                      }}
+                      className="mr-2"
+                    />
+                    <span>출산 후 (자녀가 있음)</span>
+                  </label>
+                  <label className="flex items-center">
+                    <input
+                      type="radio"
+                      name="hasChildren"
+                      checked={formData.hasChildren === false}
+                      onChange={() => {
+                        setFormData({
+                          ...formData,
+                          hasChildren: false,
+                          childCount: 0,
+                          multiChild: false,
+                        });
+                        setChildren([]);
+                      }}
+                      className="mr-2"
+                    />
+                    <span>출산 전</span>
+                  </label>
+                </div>
+              </div>
+
+              {/* 출산 전인 경우 */}
+              {!formData.hasChildren && (
+                <div className="space-y-4 pl-4 border-l-2 border-blue-200">
+                  <div>
+                    <label className="flex items-center mb-2">
+                      <input
+                        type="checkbox"
+                        checked={formData.isPregnant}
+                        onChange={(e) => {
+                          setFormData({
+                            ...formData,
+                            isPregnant: e.target.checked,
+                            pregnancyWeek: e.target.checked ? formData.pregnancyWeek : 0,
+                            planningPregnancy: e.target.checked ? false : formData.planningPregnancy,
+                          });
+                        }}
+                        className="mr-2"
+                      />
+                      <span className="text-sm font-medium text-gray-700">임신 중입니다</span>
+                    </label>
+                    {formData.isPregnant && (
+                      <div className="mt-2">
+                        <label className="block text-sm text-gray-600 mb-1">
+                          임신 주수
+                        </label>
+                        <input
+                          type="number"
+                          min="1"
+                          max="42"
+                          value={formData.pregnancyWeek || ''}
+                          onChange={(e) =>
+                            setFormData({
+                              ...formData,
+                              pregnancyWeek: parseInt(e.target.value) || 0,
+                            })
+                          }
+                          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                          placeholder="예: 20"
+                        />
+                        <p className="text-xs text-gray-500 mt-1">
+                          현재 임신 주수를 입력하세요 (1-42주)
+                        </p>
+                      </div>
+                    )}
+                  </div>
+
+                  <div>
+                    <label className="flex items-center">
+                      <input
+                        type="checkbox"
+                        checked={formData.planningPregnancy && !formData.isPregnant}
+                        onChange={(e) => {
+                          setFormData({
+                            ...formData,
+                            planningPregnancy: e.target.checked,
+                            isPregnant: e.target.checked ? false : formData.isPregnant,
+                            pregnancyWeek: e.target.checked ? 0 : formData.pregnancyWeek,
+                          });
+                        }}
+                        disabled={formData.isPregnant}
+                        className="mr-2"
+                      />
+                      <span className="text-sm font-medium text-gray-700">
+                        출산 계획이 있습니다
+                      </span>
+                    </label>
+                  </div>
+                </div>
+              )}
+            </div>
+          </section>
+
           {/* 가구 정보 */}
           <section className="bg-white rounded-xl p-6 shadow-sm">
             <h2 className="text-lg font-bold text-gray-900 mb-4">가구 정보</h2>
@@ -320,26 +465,29 @@ export default function ProfilePage() {
                 </select>
               </div>
 
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  자녀 수
-                </label>
-                <input
-                  type="number"
-                  min="0"
-                  value={formData.childCount}
-                  onChange={(e) => {
-                    const count = parseInt(e.target.value) || 0;
-                    setFormData({
-                      ...formData,
-                      childCount: count,
-                      multiChild: count >= 3,
-                    });
-                  }}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                  required
-                />
-              </div>
+              {/* 출산 후인 경우만 자녀 수 표시 */}
+              {formData.hasChildren && (
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    자녀 수
+                  </label>
+                  <input
+                    type="number"
+                    min="1"
+                    value={formData.childCount || children.length}
+                    onChange={(e) => {
+                      const count = parseInt(e.target.value) || 0;
+                      setFormData({
+                        ...formData,
+                        childCount: count,
+                        multiChild: count >= 3,
+                      });
+                    }}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    required
+                  />
+                </div>
+              )}
 
               <div className="flex items-center">
                 <input
@@ -356,10 +504,11 @@ export default function ProfilePage() {
             </div>
           </section>
 
-          {/* 자녀 정보 */}
-          <section className="bg-white rounded-xl p-6 shadow-sm">
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-lg font-bold text-gray-900">자녀 정보</h2>
+          {/* 자녀 정보 - 출산 후인 경우만 표시 */}
+          {formData.hasChildren && (
+            <section className="bg-white rounded-xl p-6 shadow-sm">
+              <div className="flex items-center justify-between mb-4">
+                <h2 className="text-lg font-bold text-gray-900">가족 구성원 (자녀 정보)</h2>
               <button
                 type="button"
                 onClick={addChild}
@@ -410,7 +559,8 @@ export default function ProfilePage() {
                 </p>
               )}
             </div>
-          </section>
+            </section>
+          )}
 
           {/* 저장 버튼 */}
           <button

@@ -14,6 +14,10 @@ export async function POST(request: Request) {
       childCount,
       dualIncome,
       children,
+      hasChildren,
+      isPregnant,
+      pregnancyWeek,
+      planningPregnancy,
     } = body;
 
     // 사용자 찾기 또는 생성
@@ -37,9 +41,13 @@ export async function POST(request: Request) {
         district,
         neighborhood,
         incomeLevel,
-        childCount,
+        childCount: hasChildren ? childCount : 0,
         dualIncome,
-        multiChild: childCount >= 3,
+        multiChild: hasChildren && childCount >= 3,
+        hasChildren: hasChildren || false,
+        isPregnant: isPregnant || false,
+        pregnancyWeek: pregnancyWeek || null,
+        planningPregnancy: planningPregnancy || false,
       },
       create: {
         userId: user.id,
@@ -47,9 +55,13 @@ export async function POST(request: Request) {
         district,
         neighborhood,
         incomeLevel,
-        childCount,
+        childCount: hasChildren ? childCount : 0,
         dualIncome,
-        multiChild: childCount >= 3,
+        multiChild: hasChildren && childCount >= 3,
+        hasChildren: hasChildren || false,
+        isPregnant: isPregnant || false,
+        pregnancyWeek: pregnancyWeek || null,
+        planningPregnancy: planningPregnancy || false,
       },
     });
 

@@ -28,10 +28,12 @@ export type AggregateUserProfile = {
 
 export type UserProfileAvgAggregateOutputType = {
   childCount: number | null
+  pregnancyWeek: number | null
 }
 
 export type UserProfileSumAggregateOutputType = {
   childCount: number | null
+  pregnancyWeek: number | null
 }
 
 export type UserProfileMinAggregateOutputType = {
@@ -44,6 +46,10 @@ export type UserProfileMinAggregateOutputType = {
   childCount: number | null
   dualIncome: boolean | null
   multiChild: boolean | null
+  hasChildren: boolean | null
+  isPregnant: boolean | null
+  pregnancyWeek: number | null
+  planningPregnancy: boolean | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -58,6 +64,10 @@ export type UserProfileMaxAggregateOutputType = {
   childCount: number | null
   dualIncome: boolean | null
   multiChild: boolean | null
+  hasChildren: boolean | null
+  isPregnant: boolean | null
+  pregnancyWeek: number | null
+  planningPregnancy: boolean | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -72,6 +82,10 @@ export type UserProfileCountAggregateOutputType = {
   childCount: number
   dualIncome: number
   multiChild: number
+  hasChildren: number
+  isPregnant: number
+  pregnancyWeek: number
+  planningPregnancy: number
   createdAt: number
   updatedAt: number
   _all: number
@@ -80,10 +94,12 @@ export type UserProfileCountAggregateOutputType = {
 
 export type UserProfileAvgAggregateInputType = {
   childCount?: true
+  pregnancyWeek?: true
 }
 
 export type UserProfileSumAggregateInputType = {
   childCount?: true
+  pregnancyWeek?: true
 }
 
 export type UserProfileMinAggregateInputType = {
@@ -96,6 +112,10 @@ export type UserProfileMinAggregateInputType = {
   childCount?: true
   dualIncome?: true
   multiChild?: true
+  hasChildren?: true
+  isPregnant?: true
+  pregnancyWeek?: true
+  planningPregnancy?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -110,6 +130,10 @@ export type UserProfileMaxAggregateInputType = {
   childCount?: true
   dualIncome?: true
   multiChild?: true
+  hasChildren?: true
+  isPregnant?: true
+  pregnancyWeek?: true
+  planningPregnancy?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -124,6 +148,10 @@ export type UserProfileCountAggregateInputType = {
   childCount?: true
   dualIncome?: true
   multiChild?: true
+  hasChildren?: true
+  isPregnant?: true
+  pregnancyWeek?: true
+  planningPregnancy?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -225,6 +253,10 @@ export type UserProfileGroupByOutputType = {
   childCount: number
   dualIncome: boolean
   multiChild: boolean
+  hasChildren: boolean
+  isPregnant: boolean
+  pregnancyWeek: number | null
+  planningPregnancy: boolean
   createdAt: Date
   updatedAt: Date
   _count: UserProfileCountAggregateOutputType | null
@@ -262,6 +294,10 @@ export type UserProfileWhereInput = {
   childCount?: Prisma.IntFilter<"UserProfile"> | number
   dualIncome?: Prisma.BoolFilter<"UserProfile"> | boolean
   multiChild?: Prisma.BoolFilter<"UserProfile"> | boolean
+  hasChildren?: Prisma.BoolFilter<"UserProfile"> | boolean
+  isPregnant?: Prisma.BoolFilter<"UserProfile"> | boolean
+  pregnancyWeek?: Prisma.IntNullableFilter<"UserProfile"> | number | null
+  planningPregnancy?: Prisma.BoolFilter<"UserProfile"> | boolean
   createdAt?: Prisma.DateTimeFilter<"UserProfile"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"UserProfile"> | Date | string
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
@@ -278,6 +314,10 @@ export type UserProfileOrderByWithRelationInput = {
   childCount?: Prisma.SortOrder
   dualIncome?: Prisma.SortOrder
   multiChild?: Prisma.SortOrder
+  hasChildren?: Prisma.SortOrder
+  isPregnant?: Prisma.SortOrder
+  pregnancyWeek?: Prisma.SortOrderInput | Prisma.SortOrder
+  planningPregnancy?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   user?: Prisma.UserOrderByWithRelationInput
@@ -297,6 +337,10 @@ export type UserProfileWhereUniqueInput = Prisma.AtLeast<{
   childCount?: Prisma.IntFilter<"UserProfile"> | number
   dualIncome?: Prisma.BoolFilter<"UserProfile"> | boolean
   multiChild?: Prisma.BoolFilter<"UserProfile"> | boolean
+  hasChildren?: Prisma.BoolFilter<"UserProfile"> | boolean
+  isPregnant?: Prisma.BoolFilter<"UserProfile"> | boolean
+  pregnancyWeek?: Prisma.IntNullableFilter<"UserProfile"> | number | null
+  planningPregnancy?: Prisma.BoolFilter<"UserProfile"> | boolean
   createdAt?: Prisma.DateTimeFilter<"UserProfile"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"UserProfile"> | Date | string
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
@@ -313,6 +357,10 @@ export type UserProfileOrderByWithAggregationInput = {
   childCount?: Prisma.SortOrder
   dualIncome?: Prisma.SortOrder
   multiChild?: Prisma.SortOrder
+  hasChildren?: Prisma.SortOrder
+  isPregnant?: Prisma.SortOrder
+  pregnancyWeek?: Prisma.SortOrderInput | Prisma.SortOrder
+  planningPregnancy?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.UserProfileCountOrderByAggregateInput
@@ -335,6 +383,10 @@ export type UserProfileScalarWhereWithAggregatesInput = {
   childCount?: Prisma.IntWithAggregatesFilter<"UserProfile"> | number
   dualIncome?: Prisma.BoolWithAggregatesFilter<"UserProfile"> | boolean
   multiChild?: Prisma.BoolWithAggregatesFilter<"UserProfile"> | boolean
+  hasChildren?: Prisma.BoolWithAggregatesFilter<"UserProfile"> | boolean
+  isPregnant?: Prisma.BoolWithAggregatesFilter<"UserProfile"> | boolean
+  pregnancyWeek?: Prisma.IntNullableWithAggregatesFilter<"UserProfile"> | number | null
+  planningPregnancy?: Prisma.BoolWithAggregatesFilter<"UserProfile"> | boolean
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"UserProfile"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"UserProfile"> | Date | string
 }
@@ -348,6 +400,10 @@ export type UserProfileCreateInput = {
   childCount?: number
   dualIncome?: boolean
   multiChild?: boolean
+  hasChildren?: boolean
+  isPregnant?: boolean
+  pregnancyWeek?: number | null
+  planningPregnancy?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   user: Prisma.UserCreateNestedOneWithoutProfileInput
@@ -364,6 +420,10 @@ export type UserProfileUncheckedCreateInput = {
   childCount?: number
   dualIncome?: boolean
   multiChild?: boolean
+  hasChildren?: boolean
+  isPregnant?: boolean
+  pregnancyWeek?: number | null
+  planningPregnancy?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   children?: Prisma.ChildUncheckedCreateNestedManyWithoutProfileInput
@@ -378,6 +438,10 @@ export type UserProfileUpdateInput = {
   childCount?: Prisma.IntFieldUpdateOperationsInput | number
   dualIncome?: Prisma.BoolFieldUpdateOperationsInput | boolean
   multiChild?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  hasChildren?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isPregnant?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  pregnancyWeek?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  planningPregnancy?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneRequiredWithoutProfileNestedInput
@@ -394,6 +458,10 @@ export type UserProfileUncheckedUpdateInput = {
   childCount?: Prisma.IntFieldUpdateOperationsInput | number
   dualIncome?: Prisma.BoolFieldUpdateOperationsInput | boolean
   multiChild?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  hasChildren?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isPregnant?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  pregnancyWeek?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  planningPregnancy?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   children?: Prisma.ChildUncheckedUpdateManyWithoutProfileNestedInput
@@ -409,6 +477,10 @@ export type UserProfileCreateManyInput = {
   childCount?: number
   dualIncome?: boolean
   multiChild?: boolean
+  hasChildren?: boolean
+  isPregnant?: boolean
+  pregnancyWeek?: number | null
+  planningPregnancy?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -422,6 +494,10 @@ export type UserProfileUpdateManyMutationInput = {
   childCount?: Prisma.IntFieldUpdateOperationsInput | number
   dualIncome?: Prisma.BoolFieldUpdateOperationsInput | boolean
   multiChild?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  hasChildren?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isPregnant?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  pregnancyWeek?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  planningPregnancy?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -436,6 +512,10 @@ export type UserProfileUncheckedUpdateManyInput = {
   childCount?: Prisma.IntFieldUpdateOperationsInput | number
   dualIncome?: Prisma.BoolFieldUpdateOperationsInput | boolean
   multiChild?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  hasChildren?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isPregnant?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  pregnancyWeek?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  planningPregnancy?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -455,12 +535,17 @@ export type UserProfileCountOrderByAggregateInput = {
   childCount?: Prisma.SortOrder
   dualIncome?: Prisma.SortOrder
   multiChild?: Prisma.SortOrder
+  hasChildren?: Prisma.SortOrder
+  isPregnant?: Prisma.SortOrder
+  pregnancyWeek?: Prisma.SortOrder
+  planningPregnancy?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
 
 export type UserProfileAvgOrderByAggregateInput = {
   childCount?: Prisma.SortOrder
+  pregnancyWeek?: Prisma.SortOrder
 }
 
 export type UserProfileMaxOrderByAggregateInput = {
@@ -473,6 +558,10 @@ export type UserProfileMaxOrderByAggregateInput = {
   childCount?: Prisma.SortOrder
   dualIncome?: Prisma.SortOrder
   multiChild?: Prisma.SortOrder
+  hasChildren?: Prisma.SortOrder
+  isPregnant?: Prisma.SortOrder
+  pregnancyWeek?: Prisma.SortOrder
+  planningPregnancy?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -487,12 +576,17 @@ export type UserProfileMinOrderByAggregateInput = {
   childCount?: Prisma.SortOrder
   dualIncome?: Prisma.SortOrder
   multiChild?: Prisma.SortOrder
+  hasChildren?: Prisma.SortOrder
+  isPregnant?: Prisma.SortOrder
+  pregnancyWeek?: Prisma.SortOrder
+  planningPregnancy?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
 
 export type UserProfileSumOrderByAggregateInput = {
   childCount?: Prisma.SortOrder
+  pregnancyWeek?: Prisma.SortOrder
 }
 
 export type UserProfileScalarRelationFilter = {
@@ -544,6 +638,14 @@ export type BoolFieldUpdateOperationsInput = {
   set?: boolean
 }
 
+export type NullableIntFieldUpdateOperationsInput = {
+  set?: number | null
+  increment?: number
+  decrement?: number
+  multiply?: number
+  divide?: number
+}
+
 export type UserProfileCreateNestedOneWithoutChildrenInput = {
   create?: Prisma.XOR<Prisma.UserProfileCreateWithoutChildrenInput, Prisma.UserProfileUncheckedCreateWithoutChildrenInput>
   connectOrCreate?: Prisma.UserProfileCreateOrConnectWithoutChildrenInput
@@ -567,6 +669,10 @@ export type UserProfileCreateWithoutUserInput = {
   childCount?: number
   dualIncome?: boolean
   multiChild?: boolean
+  hasChildren?: boolean
+  isPregnant?: boolean
+  pregnancyWeek?: number | null
+  planningPregnancy?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   children?: Prisma.ChildCreateNestedManyWithoutProfileInput
@@ -581,6 +687,10 @@ export type UserProfileUncheckedCreateWithoutUserInput = {
   childCount?: number
   dualIncome?: boolean
   multiChild?: boolean
+  hasChildren?: boolean
+  isPregnant?: boolean
+  pregnancyWeek?: number | null
+  planningPregnancy?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   children?: Prisma.ChildUncheckedCreateNestedManyWithoutProfileInput
@@ -611,6 +721,10 @@ export type UserProfileUpdateWithoutUserInput = {
   childCount?: Prisma.IntFieldUpdateOperationsInput | number
   dualIncome?: Prisma.BoolFieldUpdateOperationsInput | boolean
   multiChild?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  hasChildren?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isPregnant?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  pregnancyWeek?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  planningPregnancy?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   children?: Prisma.ChildUpdateManyWithoutProfileNestedInput
@@ -625,6 +739,10 @@ export type UserProfileUncheckedUpdateWithoutUserInput = {
   childCount?: Prisma.IntFieldUpdateOperationsInput | number
   dualIncome?: Prisma.BoolFieldUpdateOperationsInput | boolean
   multiChild?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  hasChildren?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isPregnant?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  pregnancyWeek?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  planningPregnancy?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   children?: Prisma.ChildUncheckedUpdateManyWithoutProfileNestedInput
@@ -639,6 +757,10 @@ export type UserProfileCreateWithoutChildrenInput = {
   childCount?: number
   dualIncome?: boolean
   multiChild?: boolean
+  hasChildren?: boolean
+  isPregnant?: boolean
+  pregnancyWeek?: number | null
+  planningPregnancy?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   user: Prisma.UserCreateNestedOneWithoutProfileInput
@@ -654,6 +776,10 @@ export type UserProfileUncheckedCreateWithoutChildrenInput = {
   childCount?: number
   dualIncome?: boolean
   multiChild?: boolean
+  hasChildren?: boolean
+  isPregnant?: boolean
+  pregnancyWeek?: number | null
+  planningPregnancy?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -683,6 +809,10 @@ export type UserProfileUpdateWithoutChildrenInput = {
   childCount?: Prisma.IntFieldUpdateOperationsInput | number
   dualIncome?: Prisma.BoolFieldUpdateOperationsInput | boolean
   multiChild?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  hasChildren?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isPregnant?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  pregnancyWeek?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  planningPregnancy?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneRequiredWithoutProfileNestedInput
@@ -698,6 +828,10 @@ export type UserProfileUncheckedUpdateWithoutChildrenInput = {
   childCount?: Prisma.IntFieldUpdateOperationsInput | number
   dualIncome?: Prisma.BoolFieldUpdateOperationsInput | boolean
   multiChild?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  hasChildren?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isPregnant?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  pregnancyWeek?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  planningPregnancy?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -743,6 +877,10 @@ export type UserProfileSelect<ExtArgs extends runtime.Types.Extensions.InternalA
   childCount?: boolean
   dualIncome?: boolean
   multiChild?: boolean
+  hasChildren?: boolean
+  isPregnant?: boolean
+  pregnancyWeek?: boolean
+  planningPregnancy?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -760,6 +898,10 @@ export type UserProfileSelectCreateManyAndReturn<ExtArgs extends runtime.Types.E
   childCount?: boolean
   dualIncome?: boolean
   multiChild?: boolean
+  hasChildren?: boolean
+  isPregnant?: boolean
+  pregnancyWeek?: boolean
+  planningPregnancy?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -775,6 +917,10 @@ export type UserProfileSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.E
   childCount?: boolean
   dualIncome?: boolean
   multiChild?: boolean
+  hasChildren?: boolean
+  isPregnant?: boolean
+  pregnancyWeek?: boolean
+  planningPregnancy?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -790,11 +936,15 @@ export type UserProfileSelectScalar = {
   childCount?: boolean
   dualIncome?: boolean
   multiChild?: boolean
+  hasChildren?: boolean
+  isPregnant?: boolean
+  pregnancyWeek?: boolean
+  planningPregnancy?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type UserProfileOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "city" | "district" | "neighborhood" | "incomeLevel" | "childCount" | "dualIncome" | "multiChild" | "createdAt" | "updatedAt", ExtArgs["result"]["userProfile"]>
+export type UserProfileOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "city" | "district" | "neighborhood" | "incomeLevel" | "childCount" | "dualIncome" | "multiChild" | "hasChildren" | "isPregnant" | "pregnancyWeek" | "planningPregnancy" | "createdAt" | "updatedAt", ExtArgs["result"]["userProfile"]>
 export type UserProfileInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   children?: boolean | Prisma.UserProfile$childrenArgs<ExtArgs>
@@ -823,6 +973,10 @@ export type $UserProfilePayload<ExtArgs extends runtime.Types.Extensions.Interna
     childCount: number
     dualIncome: boolean
     multiChild: boolean
+    hasChildren: boolean
+    isPregnant: boolean
+    pregnancyWeek: number | null
+    planningPregnancy: boolean
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["userProfile"]>
@@ -1259,6 +1413,10 @@ export interface UserProfileFieldRefs {
   readonly childCount: Prisma.FieldRef<"UserProfile", 'Int'>
   readonly dualIncome: Prisma.FieldRef<"UserProfile", 'Boolean'>
   readonly multiChild: Prisma.FieldRef<"UserProfile", 'Boolean'>
+  readonly hasChildren: Prisma.FieldRef<"UserProfile", 'Boolean'>
+  readonly isPregnant: Prisma.FieldRef<"UserProfile", 'Boolean'>
+  readonly pregnancyWeek: Prisma.FieldRef<"UserProfile", 'Int'>
+  readonly planningPregnancy: Prisma.FieldRef<"UserProfile", 'Boolean'>
   readonly createdAt: Prisma.FieldRef<"UserProfile", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"UserProfile", 'DateTime'>
 }

@@ -43,6 +43,12 @@ model UserProfile {
   dualIncome      Boolean  @default(false) // 맞벌이 여부
   multiChild      Boolean  @default(false) // 다자녀 여부 (3명 이상)
   
+  // 출산 상태
+  hasChildren     Boolean  @default(false) // 출산 여부 (true: 출산 후, false: 출산 전)
+  isPregnant      Boolean  @default(false) // 임신 여부
+  pregnancyWeek   Int?     // 임신 주수 (출산 전이고 임신 중인 경우)
+  planningPregnancy Boolean @default(false) // 출산 계획 여부 (출산 전이고 임신 중이 아닌 경우)
+  
   // 자녀 정보
   children        Child[]
   

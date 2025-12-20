@@ -1066,6 +1066,10 @@ export const UserProfileScalarFieldEnum = {
   childCount: 'childCount',
   dualIncome: 'dualIncome',
   multiChild: 'multiChild',
+  hasChildren: 'hasChildren',
+  isPregnant: 'isPregnant',
+  pregnancyWeek: 'pregnancyWeek',
+  planningPregnancy: 'planningPregnancy',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
