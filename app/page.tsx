@@ -43,9 +43,40 @@ async function fetchBookmarkedPolicies() {
 export default function Home() {
   const [hasProfile, setHasProfile] = useState(false);
 
-  useEffect(() => {
+  // 프로필 상태 확인 함수
+  const checkProfile = () => {
     const profile = getUserProfile();
-    setHasProfile(!!(profile && profile.city && profile.district));
+    const hasValidProfile = !!(profile && profile.city && profile.district);
+    setHasProfile(hasValidProfile);
+  };
+
+  useEffect(() => {
+    // 초기 확인
+    checkProfile();
+
+    // 페이지 포커스 시 다시 확인
+    const handleFocus = () => {
+      checkProfile();
+    };
+
+    // visibilitychange 이벤트로 탭 전환 시에도 확인
+    const handleVisibilityChange = () => {
+      if (!document.hidden) {
+        checkProfile();
+      }
+    };
+
+    window.addEventListener('focus', handleFocus);
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+
+    // 주기적으로 확인 (5초마다)
+    const interval = setInterval(checkProfile, 5000);
+
+    return () => {
+      window.removeEventListener('focus', handleFocus);
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+      clearInterval(interval);
+    };
   }, []);
 
   const { data: policies = [], isLoading } = useQuery({

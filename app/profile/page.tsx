@@ -120,15 +120,27 @@ export default function ProfilePage() {
 
       const result = await response.json();
       
-      // localStorage에 프로필 정보 저장
-      saveUserProfile({
-        ...formData,
+      // localStorage에 프로필 정보 저장 (city와 district가 필수)
+      const profileData = {
+        city: formData.city,
+        district: formData.district,
+        neighborhood: formData.neighborhood,
+        incomeLevel: formData.incomeLevel,
+        childCount: children.length,
+        dualIncome: formData.dualIncome,
+        multiChild: children.length >= 3,
         children: children,
         profileId: result.profile?.id,
-      });
+      };
+      
+      saveUserProfile(profileData);
 
       alert('프로필이 저장되었습니다!');
-      router.push('/');
+      
+      // 홈으로 이동하기 전에 짧은 딜레이를 주어 localStorage가 확실히 저장되도록 함
+      setTimeout(() => {
+        router.push('/');
+      }, 100);
     } catch (error) {
       console.error('Error saving profile:', error);
       alert('프로필 저장 중 오류가 발생했습니다.');
