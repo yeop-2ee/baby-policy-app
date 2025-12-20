@@ -124,7 +124,7 @@ export default function ProfilePage() {
       const profileData = {
         city: formData.city,
         district: formData.district,
-        neighborhood: formData.neighborhood,
+        neighborhood: formData.neighborhood || '',
         incomeLevel: formData.incomeLevel,
         childCount: children.length,
         dualIncome: formData.dualIncome,
@@ -135,9 +135,22 @@ export default function ProfilePage() {
       
       saveUserProfile(profileData);
 
+      // 커스텀 이벤트 발생 (홈 페이지에서 감지)
+      if (typeof window !== 'undefined') {
+        // 커스텀 이벤트로 프로필 저장 알림
+        window.dispatchEvent(new CustomEvent('profileSaved', { detail: profileData }));
+        
+        // storage 이벤트도 발생 (다른 탭 동기화용)
+        window.dispatchEvent(new StorageEvent('storage', {
+          key: 'baby-policy-user-profile',
+          newValue: JSON.stringify(profileData),
+          storageArea: localStorage,
+        }));
+      }
+
       alert('프로필이 저장되었습니다!');
       
-      // 홈으로 이동하기 전에 짧은 딜레이를 주어 localStorage가 확실히 저장되도록 함
+      // 홈으로 이동 (약간의 딜레이를 주어 이벤트가 전달되도록)
       setTimeout(() => {
         router.push('/');
       }, 100);

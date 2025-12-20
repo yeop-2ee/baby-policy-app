@@ -14,8 +14,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "우리 아이 정책 매칭 - 맞춤형 육아 정책 정보 서비스",
-  description: "거주지, 소득, 자녀 정보를 바탕으로 맞춤형 육아 정책을 찾아드립니다. 중앙정부 및 지자체 전용 혜택까지 한눈에!",
+  title: "육아 정조준 - 정책 조목조목 준비하기",
+  description: "육아 정조준은 거주지, 소득, 자녀 정보를 바탕으로 맞춤형 육아 정책을 찾아드립니다. 중앙정부 및 지자체 전용 혜택까지 한눈에!",
 };
 
 export default function RootLayout({

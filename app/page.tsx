@@ -2,11 +2,12 @@
 
 import React, { useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
+import { usePathname } from 'next/navigation';
 import Link from 'next/link';
 import { Navbar } from '@/components/Navbar';
 import { FiSearch, FiCalendar, FiTrendingUp, FiUsers, FiFileText, FiAlertCircle, FiExternalLink, FiBookmark } from 'react-icons/fi';
 import { calculateDDay, formatCurrency } from '@/lib/utils';
-import { getUserId, getUserProfile, getBookmarks, saveBookmarks } from '@/lib/storage';
+import { getUserId, getUserProfile, getBookmarks, saveBookmarks, saveUserProfile } from '@/lib/storage';
 
 async function fetchPolicies() {
   if (typeof window === 'undefined') return [];
@@ -40,14 +41,73 @@ async function fetchBookmarkedPolicies() {
   return policies;
 }
 
-export default function Home() {
-  const [hasProfile, setHasProfile] = useState(false);
+async function fetchUserProfile() {
+  const userId = getUserId();
+  try {
+    const response = await fetch(`/api/profile?userId=${userId}`);
+    if (response.ok) {
+      const data = await response.json();
+      return data.user?.profile || null;
+    }
+  } catch (error) {
+    console.error('Error fetching profile from API:', error);
+  }
+  return null;
+}
 
-  // 프로필 상태 확인 함수
-  const checkProfile = () => {
-    const profile = getUserProfile();
-    const hasValidProfile = !!(profile && profile.city && profile.district);
-    setHasProfile(hasValidProfile);
+export default function Home() {
+  const pathname = usePathname();
+  const [hasProfile, setHasProfile] = useState(false);
+  const [isCheckingProfile, setIsCheckingProfile] = useState(false);
+
+  // 프로필 상태 확인 함수 (localStorage와 API 모두 확인)
+  const checkProfile = async () => {
+    if (isCheckingProfile) return; // 중복 확인 방지
+    
+    setIsCheckingProfile(true);
+    
+    try {
+      // 1. localStorage에서 먼저 확인
+      const localProfile = getUserProfile();
+      let hasValidProfile = !!(
+        localProfile && 
+        localProfile.city && 
+        localProfile.city.trim() !== '' &&
+        localProfile.district && 
+        localProfile.district.trim() !== ''
+      );
+
+      // 2. API에서도 확인 (더 정확한 정보)
+      const apiProfile = await fetchUserProfile();
+      if (apiProfile) {
+        hasValidProfile = !!(
+          apiProfile.city && 
+          apiProfile.city.trim() !== '' &&
+          apiProfile.district && 
+          apiProfile.district.trim() !== ''
+        );
+        
+        // API 프로필이 있으면 localStorage와 동기화
+        if (hasValidProfile && (!localProfile || localProfile.city !== apiProfile.city)) {
+          saveUserProfile({
+            city: apiProfile.city,
+            district: apiProfile.district,
+            neighborhood: apiProfile.neighborhood || '',
+            incomeLevel: apiProfile.incomeLevel || '',
+            childCount: apiProfile.childCount || 0,
+            dualIncome: apiProfile.dualIncome || false,
+            multiChild: apiProfile.multiChild || false,
+            children: apiProfile.children || [],
+            profileId: apiProfile.id,
+          });
+        }
+      }
+
+      setHasProfile(hasValidProfile);
+      return hasValidProfile;
+    } finally {
+      setIsCheckingProfile(false);
+    }
   };
 
   useEffect(() => {
@@ -66,18 +126,45 @@ export default function Home() {
       }
     };
 
+    // storage 이벤트 감지 (다른 탭에서 변경된 경우)
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === 'baby-policy-user-profile') {
+        checkProfile();
+      }
+    };
+
+    // 커스텀 이벤트 감지 (같은 탭에서 프로필 저장 시)
+    const handleProfileSaved = () => {
+      checkProfile();
+    };
+
     window.addEventListener('focus', handleFocus);
     document.addEventListener('visibilitychange', handleVisibilityChange);
+    window.addEventListener('storage', handleStorageChange);
+    window.addEventListener('profileSaved', handleProfileSaved);
 
-    // 주기적으로 확인 (5초마다)
-    const interval = setInterval(checkProfile, 5000);
+    // 주기적으로 확인 (3초마다)
+    const interval = setInterval(checkProfile, 3000);
 
     return () => {
       window.removeEventListener('focus', handleFocus);
       document.removeEventListener('visibilitychange', handleVisibilityChange);
+      window.removeEventListener('storage', handleStorageChange);
+      window.removeEventListener('profileSaved', handleProfileSaved);
       clearInterval(interval);
     };
   }, []);
+
+  // 경로가 변경될 때마다 프로필 상태 확인 (프로필 페이지에서 돌아왔을 때)
+  useEffect(() => {
+    if (pathname === '/') {
+      // 홈 페이지로 돌아왔을 때 프로필 상태 확인 (약간의 딜레이를 주어 localStorage 저장 완료 대기)
+      const timer = setTimeout(() => {
+        checkProfile();
+      }, 300);
+      return () => clearTimeout(timer);
+    }
+  }, [pathname]);
 
   const { data: policies = [], isLoading } = useQuery({
     queryKey: ['policies'],
@@ -107,10 +194,10 @@ export default function Home() {
       <header className="bg-white shadow-sm sticky top-0 z-40">
         <div className="max-w-4xl mx-auto px-4 py-4">
           <h1 className="text-2xl font-bold text-gray-900">
-            우리 아이 정책 매칭
+            육아 정조준
           </h1>
           <p className="text-sm text-gray-600 mt-1">
-            맞춤형 육아 정책을 찾아드립니다
+            정책 조목조목 준비하기
           </p>
         </div>
       </header>
