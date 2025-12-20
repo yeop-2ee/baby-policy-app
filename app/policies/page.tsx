@@ -6,6 +6,7 @@ import { useQuery } from '@tanstack/react-query';
 import { Navbar } from '@/components/Navbar';
 import { FiArrowLeft, FiSearch, FiFilter, FiBookmark, FiExternalLink } from 'react-icons/fi';
 import { formatDate, formatCurrency, calculateDDay } from '@/lib/utils';
+import { getUserId, getBookmarks, addBookmark, removeBookmark } from '@/lib/storage';
 
 async function fetchPolicies(category?: string | null, filterByLocation?: boolean) {
   const params = new URLSearchParams();
@@ -15,8 +16,7 @@ async function fetchPolicies(category?: string | null, filterByLocation?: boolea
   if (filterByLocation) {
     params.append('filterByLocation', 'true');
   }
-  // 임시로 userId를 localStorage에서 가져오거나, 실제 인증 시스템을 사용
-  const userId = localStorage.getItem('userId') || 'default-user';
+  const userId = getUserId();
   params.append('userId', userId);
   
   const url = `/api/policies?${params.toString()}`;
@@ -46,13 +46,21 @@ export default function PoliciesPage() {
     retry: 1,
   });
 
-  // 북마크 상태 초기화
+  // 북마크 상태 초기화 (localStorage와 API 데이터 모두 확인)
   useEffect(() => {
+    const savedBookmarks = new Set<string>(getBookmarks());
+    
     if (data) {
-      const bookmarked = new Set<string>(
-        data.filter((p: any) => p.isBookmarked).map((p: any) => p.id)
-      );
-      setBookmarkedPolicies(bookmarked);
+      // API에서 받은 북마크 상태와 localStorage의 북마크 상태 병합
+      data.forEach((p: any) => {
+        if (p.isBookmarked) {
+          savedBookmarks.add(p.id);
+        }
+      });
+      setBookmarkedPolicies(savedBookmarks);
+    } else {
+      // 데이터가 없어도 localStorage의 북마크는 표시
+      setBookmarkedPolicies(savedBookmarks);
     }
   }, [data]);
 
@@ -60,7 +68,7 @@ export default function PoliciesPage() {
     e.preventDefault();
     e.stopPropagation();
     
-    const userId = localStorage.getItem('userId') || 'default-user';
+    const userId = getUserId();
     
     try {
       const response = await fetch('/api/bookmark', {
@@ -73,6 +81,15 @@ export default function PoliciesPage() {
 
       if (response.ok) {
         const result = await response.json();
+        
+        // localStorage 업데이트
+        if (result.isBookmarked) {
+          addBookmark(policyId);
+        } else {
+          removeBookmark(policyId);
+        }
+        
+        // 상태 업데이트
         setBookmarkedPolicies(prev => {
           const newSet = new Set(prev);
           if (result.isBookmarked) {

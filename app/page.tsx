@@ -1,13 +1,16 @@
 'use client';
 
+import React, { useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import Link from 'next/link';
 import { Navbar } from '@/components/Navbar';
 import { FiSearch, FiCalendar, FiTrendingUp, FiUsers, FiFileText, FiAlertCircle, FiExternalLink, FiBookmark } from 'react-icons/fi';
 import { calculateDDay, formatCurrency } from '@/lib/utils';
+import { getUserId, getUserProfile, getBookmarks, saveBookmarks } from '@/lib/storage';
 
 async function fetchPolicies() {
-  const userId = typeof window !== 'undefined' ? localStorage.getItem('userId') || 'default-user' : 'default-user';
+  if (typeof window === 'undefined') return [];
+  const userId = getUserId();
   const response = await fetch(`/api/policies?userId=${userId}`);
   if (!response.ok) {
     throw new Error('Failed to fetch policies');
@@ -17,16 +20,34 @@ async function fetchPolicies() {
 }
 
 async function fetchBookmarkedPolicies() {
-  const userId = typeof window !== 'undefined' ? localStorage.getItem('userId') || 'default-user' : 'default-user';
+  if (typeof window === 'undefined') return [];
+  const userId = getUserId();
   const response = await fetch(`/api/bookmarks?userId=${userId}`);
   if (!response.ok) {
-    return [];
+    // API 실패 시 localStorage에서 가져오기
+    const savedBookmarkIds = getBookmarks();
+    return savedBookmarkIds.length > 0 ? [] : []; // 빈 배열 반환 (정책 상세 정보는 없음)
   }
   const data = await response.json();
-  return data.policies || [];
+  const policies = data.policies || [];
+  
+  // localStorage에 북마크 ID 목록 저장
+  if (policies.length > 0) {
+    const bookmarkIds = policies.map((p: any) => p.id);
+    saveBookmarks(bookmarkIds);
+  }
+  
+  return policies;
 }
 
 export default function Home() {
+  const [hasProfile, setHasProfile] = useState(false);
+
+  useEffect(() => {
+    const profile = getUserProfile();
+    setHasProfile(!!(profile && profile.city && profile.district));
+  }, []);
+
   const { data: policies = [], isLoading } = useQuery({
     queryKey: ['policies'],
     queryFn: fetchPolicies,
@@ -148,19 +169,21 @@ export default function Home() {
           </div>
         )}
 
-        {/* 프로필 설정 안내 */}
-        <div className="bg-gradient-to-r from-blue-500 to-purple-600 rounded-2xl p-6 text-white mb-6">
-          <h2 className="text-xl font-bold mb-2">프로필을 설정해주세요</h2>
-          <p className="text-blue-100 mb-4">
-            거주지, 소득, 자녀 정보를 입력하면 맞춤형 정책을 추천해드립니다
-          </p>
-          <Link
-            href="/profile"
-            className="inline-block bg-white text-blue-600 px-6 py-2 rounded-lg font-semibold hover:bg-blue-50 transition-colors"
-          >
-            프로필 설정하기
-          </Link>
-        </div>
+        {/* 프로필 설정 안내 - 프로필이 없을 때만 표시 */}
+        {!hasProfile && (
+          <div className="bg-gradient-to-r from-blue-500 to-purple-600 rounded-2xl p-6 text-white mb-6">
+            <h2 className="text-xl font-bold mb-2">프로필을 설정해주세요</h2>
+            <p className="text-blue-100 mb-4">
+              거주지, 소득, 자녀 정보를 입력하면 맞춤형 정책을 추천해드립니다
+            </p>
+            <Link
+              href="/profile"
+              className="inline-block bg-white text-blue-600 px-6 py-2 rounded-lg font-semibold hover:bg-blue-50 transition-colors"
+            >
+              프로필 설정하기
+            </Link>
+          </div>
+        )}
 
         {/* 주요 기능 카드 */}
         <div className="grid grid-cols-2 gap-4 mb-6">
@@ -183,7 +206,7 @@ export default function Home() {
           >
             <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mb-3">
               <FiTrendingUp className="w-6 h-6 text-green-600" />
-            </div>
+        </div>
             <h3 className="font-semibold text-gray-900 mb-1">혜택 계산</h3>
             <p className="text-sm text-gray-600">
               받을 수 있는 금액 계산

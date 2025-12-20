@@ -6,9 +6,10 @@ import { useQuery } from '@tanstack/react-query';
 import { Navbar } from '@/components/Navbar';
 import { FiArrowLeft, FiBookmark, FiExternalLink, FiTrash2 } from 'react-icons/fi';
 import { formatDate, formatCurrency, calculateDDay } from '@/lib/utils';
+import { getUserId, getBookmarks, removeBookmark } from '@/lib/storage';
 
 async function fetchBookmarkedPolicies() {
-  const userId = localStorage.getItem('userId') || 'default-user';
+  const userId = getUserId();
   const response = await fetch(`/api/bookmarks?userId=${userId}`);
   if (!response.ok) {
     throw new Error('Failed to fetch bookmarked policies');
@@ -27,7 +28,7 @@ export default function BookmarksPage() {
   });
 
   const toggleBookmark = async (policyId: string) => {
-    const userId = localStorage.getItem('userId') || 'default-user';
+    const userId = getUserId();
     
     try {
       const response = await fetch('/api/bookmark', {
@@ -39,6 +40,13 @@ export default function BookmarksPage() {
       });
 
       if (response.ok) {
+        const result = await response.json();
+        
+        // localStorage 업데이트
+        if (!result.isBookmarked) {
+          removeBookmark(policyId);
+        }
+        
         refetch(); // 목록 새로고침
       }
     } catch (error) {

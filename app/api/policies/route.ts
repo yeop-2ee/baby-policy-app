@@ -112,12 +112,12 @@ export async function GET(request: Request) {
             },
           });
 
-          return {
-            ...policy,
-            matchScore: userPolicy.matchScore,
-            isEligible: userPolicy.isEligible,
-            isBookmarked: userPolicy.isBookmarked,
-          };
+            return {
+              ...policy,
+              matchScore: userPolicy.matchScore,
+              isEligible: userPolicy.isEligible,
+              isBookmarked: userPolicy.isBookmarked || false,
+            };
         })
       );
     }

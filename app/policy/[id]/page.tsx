@@ -7,6 +7,7 @@ import Link from 'next/link';
 import { Navbar } from '@/components/Navbar';
 import { FiArrowLeft, FiExternalLink, FiBookmark, FiCalendar, FiDollarSign, FiFileText, FiUsers } from 'react-icons/fi';
 import { formatDate, formatCurrency, calculateDDay } from '@/lib/utils';
+import { getUserId, getBookmarks, addBookmark, removeBookmark } from '@/lib/storage';
 
 async function fetchPolicy(id: string) {
   const response = await fetch(`/api/policy/${id}`);
@@ -27,19 +28,32 @@ export default function PolicyDetailPage() {
     queryFn: () => fetchPolicy(policyId),
   });
 
-  // 북마크 상태 확인
+  // 북마크 상태 확인 (localStorage와 API 모두 확인)
   useEffect(() => {
     if (policyId) {
-      const userId = localStorage.getItem('userId') || 'default-user';
+      // 먼저 localStorage에서 확인
+      const savedBookmarks = getBookmarks();
+      setIsBookmarked(savedBookmarks.includes(policyId));
+      
+      // API에서도 확인 (더 정확한 정보)
+      const userId = getUserId();
       fetch(`/api/bookmark?userId=${userId}&policyId=${policyId}`)
         .then(res => res.json())
-        .then(data => setIsBookmarked(data.isBookmarked || false))
+        .then(data => {
+          setIsBookmarked(data.isBookmarked || false);
+          // localStorage 동기화
+          if (data.isBookmarked && !savedBookmarks.includes(policyId)) {
+            addBookmark(policyId);
+          } else if (!data.isBookmarked && savedBookmarks.includes(policyId)) {
+            removeBookmark(policyId);
+          }
+        })
         .catch(err => console.error('Error fetching bookmark status:', err));
     }
   }, [policyId]);
 
   const toggleBookmark = async () => {
-    const userId = localStorage.getItem('userId') || 'default-user';
+    const userId = getUserId();
     
     try {
       const response = await fetch('/api/bookmark', {
@@ -53,6 +67,13 @@ export default function PolicyDetailPage() {
       if (response.ok) {
         const result = await response.json();
         setIsBookmarked(result.isBookmarked);
+        
+        // localStorage 동기화
+        if (result.isBookmarked) {
+          addBookmark(policyId);
+        } else {
+          removeBookmark(policyId);
+        }
       }
     } catch (error) {
       console.error('Error toggling bookmark:', error);

@@ -1,10 +1,11 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { Navbar } from '@/components/Navbar';
 import { FiArrowLeft, FiPlus, FiX } from 'react-icons/fi';
 import Link from 'next/link';
+import { getUserId, saveUserProfile, getUserProfile } from '@/lib/storage';
 
 export default function ProfilePage() {
   const router = useRouter();
@@ -18,6 +19,72 @@ export default function ProfilePage() {
     multiChild: false,
   });
   const [children, setChildren] = useState<Array<{ name: string; birthDate: string }>>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  // 저장된 프로필 정보 로드
+  useEffect(() => {
+    const loadProfile = async () => {
+      const userId = getUserId();
+      
+      // 먼저 localStorage에서 로드
+      const savedProfile = getUserProfile();
+      if (savedProfile) {
+        setFormData({
+          city: savedProfile.city || '',
+          district: savedProfile.district || '',
+          neighborhood: savedProfile.neighborhood || '',
+          incomeLevel: savedProfile.incomeLevel || '',
+          childCount: savedProfile.childCount || 0,
+          dualIncome: savedProfile.dualIncome || false,
+          multiChild: savedProfile.multiChild || false,
+        });
+        if (savedProfile.children) {
+          setChildren(savedProfile.children.map((child: any) => ({
+            name: child.name || '',
+            birthDate: child.birthDate ? new Date(child.birthDate).toISOString().split('T')[0] : '',
+          })));
+        }
+      }
+      
+      // 데이터베이스에서도 프로필 로드 (더 최신 정보가 있을 수 있음)
+      try {
+        const response = await fetch(`/api/profile?userId=${userId}`);
+        if (response.ok) {
+          const data = await response.json();
+          if (data.user?.profile) {
+            const profile = data.user.profile;
+            setFormData({
+              city: profile.city || '',
+              district: profile.district || '',
+              neighborhood: profile.neighborhood || '',
+              incomeLevel: profile.incomeLevel || '',
+              childCount: profile.childCount || 0,
+              dualIncome: profile.dualIncome || false,
+              multiChild: profile.multiChild || false,
+            });
+            if (profile.children && profile.children.length > 0) {
+              setChildren(profile.children.map((child: any) => ({
+                name: child.name || '',
+                birthDate: child.birthDate ? new Date(child.birthDate).toISOString().split('T')[0] : '',
+              })));
+            }
+            
+            // localStorage에도 저장
+            saveUserProfile({
+              ...profile,
+              children: profile.children || [],
+            });
+          }
+        }
+      } catch (error) {
+        console.error('Error loading profile from database:', error);
+      }
+      
+      setIsLoading(false);
+    };
+    
+    loadProfile();
+  }, []);
 
   const cities = ['서울특별시', '부산광역시', '대구광역시', '인천광역시', '광주광역시', '대전광역시', '울산광역시', '세종특별자치시', '경기도', '강원도', '충청북도', '충청남도', '전라북도', '전라남도', '경상북도', '경상남도', '제주특별자치도'];
   const districts: Record<string, string[]> = {
@@ -27,12 +94,7 @@ export default function ProfilePage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    // userId 가져오기 또는 생성
-    let userId = localStorage.getItem('userId');
-    if (!userId) {
-      userId = `user-${Date.now()}`;
-      localStorage.setItem('userId', userId);
-    }
+    const userId = getUserId();
 
     try {
       const response = await fetch('/api/profile', {
@@ -55,6 +117,15 @@ export default function ProfilePage() {
       if (!response.ok) {
         throw new Error('프로필 저장에 실패했습니다.');
       }
+
+      const result = await response.json();
+      
+      // localStorage에 프로필 정보 저장
+      saveUserProfile({
+        ...formData,
+        children: children,
+        profileId: result.profile?.id,
+      });
 
       alert('프로필이 저장되었습니다!');
       router.push('/');
@@ -90,7 +161,12 @@ export default function ProfilePage() {
       </header>
 
       <main className="max-w-4xl mx-auto px-4 py-6">
-        <form onSubmit={handleSubmit} className="space-y-6">
+        {isLoading ? (
+          <div className="text-center py-12">
+            <p className="text-gray-500">프로필 정보를 불러오는 중...</p>
+          </div>
+        ) : (
+          <form onSubmit={handleSubmit} className="space-y-6">
           {/* 거주지 정보 */}
           <section className="bg-white rounded-xl p-6 shadow-sm">
             <h2 className="text-lg font-bold text-gray-900 mb-4">거주지 정보</h2>
@@ -271,6 +347,7 @@ export default function ProfilePage() {
             프로필 저장하기
           </button>
         </form>
+        )}
       </main>
 
       <Navbar />
