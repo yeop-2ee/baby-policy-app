@@ -3,13 +3,24 @@
 import { useQuery } from '@tanstack/react-query';
 import Link from 'next/link';
 import { Navbar } from '@/components/Navbar';
-import { FiSearch, FiCalendar, FiTrendingUp, FiUsers, FiFileText, FiAlertCircle, FiExternalLink } from 'react-icons/fi';
+import { FiSearch, FiCalendar, FiTrendingUp, FiUsers, FiFileText, FiAlertCircle, FiExternalLink, FiBookmark } from 'react-icons/fi';
 import { calculateDDay, formatCurrency } from '@/lib/utils';
 
 async function fetchPolicies() {
-  const response = await fetch('/api/policies');
+  const userId = typeof window !== 'undefined' ? localStorage.getItem('userId') || 'default-user' : 'default-user';
+  const response = await fetch(`/api/policies?userId=${userId}`);
   if (!response.ok) {
     throw new Error('Failed to fetch policies');
+  }
+  const data = await response.json();
+  return data.policies || [];
+}
+
+async function fetchBookmarkedPolicies() {
+  const userId = typeof window !== 'undefined' ? localStorage.getItem('userId') || 'default-user' : 'default-user';
+  const response = await fetch(`/api/bookmarks?userId=${userId}`);
+  if (!response.ok) {
+    return [];
   }
   const data = await response.json();
   return data.policies || [];
@@ -19,6 +30,11 @@ export default function Home() {
   const { data: policies = [], isLoading } = useQuery({
     queryKey: ['policies'],
     queryFn: fetchPolicies,
+  });
+
+  const { data: bookmarkedPolicies = [] } = useQuery({
+    queryKey: ['bookmarkedPolicies'],
+    queryFn: fetchBookmarkedPolicies,
   });
 
   // 가장 긴급한 D-Day 정책 하나만 찾기 (7일 이하)
@@ -95,6 +111,42 @@ export default function Home() {
             </Link>
           );
         })()}
+
+        {/* 즐겨찾기 섹션 */}
+        {bookmarkedPolicies.length > 0 && (
+          <div className="bg-white rounded-xl p-6 shadow-sm mb-6">
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center gap-2">
+                <FiBookmark className="w-5 h-5 text-yellow-500 fill-current" />
+                <h2 className="text-lg font-bold text-gray-900">즐겨찾기한 정책</h2>
+                <span className="text-sm text-gray-500">({bookmarkedPolicies.length})</span>
+              </div>
+              <Link
+                href="/bookmarks"
+                className="text-sm text-blue-600 hover:text-blue-700"
+              >
+                전체 보기 →
+              </Link>
+            </div>
+            <div className="space-y-3">
+              {bookmarkedPolicies.slice(0, 3).map((policy: any) => (
+                <Link
+                  key={policy.id}
+                  href={`/policy/${policy.id}`}
+                  className="block border border-gray-200 rounded-lg p-4 hover:border-yellow-300 hover:bg-yellow-50 transition-all"
+                >
+                  <div className="flex items-center justify-between">
+                    <div className="flex-1">
+                      <h3 className="font-semibold text-gray-900 mb-1">{policy.title}</h3>
+                      <p className="text-sm text-gray-600 line-clamp-1">{policy.description}</p>
+                    </div>
+                    <FiBookmark className="w-5 h-5 text-yellow-500 fill-current ml-2 flex-shrink-0" />
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </div>
+        )}
 
         {/* 프로필 설정 안내 */}
         <div className="bg-gradient-to-r from-blue-500 to-purple-600 rounded-2xl p-6 text-white mb-6">

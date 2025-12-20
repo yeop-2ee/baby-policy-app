@@ -7,13 +7,52 @@ export async function GET(request: Request) {
     const { searchParams } = new URL(request.url);
     const userId = searchParams.get('userId');
     const category = searchParams.get('category');
+    const filterByLocation = searchParams.get('filterByLocation') === 'true';
 
     console.log('[API] DATABASE_URL:', process.env.DATABASE_URL);
     console.log('[API] Category filter:', category);
+    console.log('[API] Filter by location:', filterByLocation);
+
+    // 사용자 프로필 조회 (지역 필터링을 위해)
+    let userProfile = null;
+    if (userId) {
+      const user = await prisma.user.findUnique({
+        where: { id: userId },
+        include: {
+          profile: {
+            include: {
+              children: true,
+            },
+          },
+        },
+      });
+      userProfile = user?.profile || null;
+    }
+
+    // 지역 필터링 조건 생성
+    let locationFilter: any = undefined;
+    if (filterByLocation && userProfile?.city) {
+      locationFilter = {
+        OR: [
+          { targetCity: null }, // 전국 정책
+          { targetCity: userProfile.city, targetDistrict: null }, // 해당 시 전체 정책
+          { targetCity: userProfile.city, targetDistrict: userProfile.district }, // 해당 구/군 정책
+        ],
+      };
+    }
+
+    // 정책 조회 조건 생성
+    const whereClause: any = {};
+    if (category && category !== '전체') {
+      whereClause.category = category;
+    }
+    if (locationFilter) {
+      whereClause.AND = [locationFilter];
+    }
 
     // 정책 조회
     let policies = await prisma.policy.findMany({
-      where: category && category !== '전체' ? { category } : undefined,
+      where: Object.keys(whereClause).length > 0 ? whereClause : undefined,
       include: {
         reviews: {
           take: 3,
@@ -26,74 +65,61 @@ export async function GET(request: Request) {
     console.log(`[API] Found ${policies.length} policies`);
 
     // 사용자 프로필이 있으면 매칭 점수 계산
-    if (userId) {
-      const user = await prisma.user.findUnique({
-        where: { id: userId },
-        include: {
-          profile: {
-            include: {
-              children: true,
+    if (userId && userProfile) {
+      policies = await Promise.all(
+        policies.map(async (policy) => {
+          const matchScore = calculateMatchScore(
+            {
+              city: userProfile!.city,
+              district: userProfile!.district,
+              incomeLevel: userProfile!.incomeLevel,
+              childCount: userProfile!.childCount,
+              dualIncome: userProfile!.dualIncome,
+              multiChild: userProfile!.multiChild,
+              children: userProfile!.children.map(c => ({ age: c.age })),
             },
-          },
-        },
-      });
+            {
+              targetCity: policy.targetCity,
+              targetDistrict: policy.targetDistrict,
+              minIncomeLevel: policy.minIncomeLevel,
+              maxIncomeLevel: policy.maxIncomeLevel,
+              minChildCount: policy.minChildCount,
+              maxChildCount: policy.maxChildCount,
+              minChildAge: policy.minChildAge,
+              maxChildAge: policy.maxChildAge,
+              requiresDualIncome: policy.requiresDualIncome,
+              requiresMultiChild: policy.requiresMultiChild,
+            }
+          );
 
-      if (user?.profile) {
-        policies = await Promise.all(
-          policies.map(async (policy) => {
-            const matchScore = calculateMatchScore(
-              {
-                city: user.profile!.city,
-                district: user.profile!.district,
-                incomeLevel: user.profile!.incomeLevel,
-                childCount: user.profile!.childCount,
-                dualIncome: user.profile!.dualIncome,
-                multiChild: user.profile!.multiChild,
-                children: user.profile!.children.map(c => ({ age: c.age })),
-              },
-              {
-                targetCity: policy.targetCity,
-                targetDistrict: policy.targetDistrict,
-                minIncomeLevel: policy.minIncomeLevel,
-                maxIncomeLevel: policy.maxIncomeLevel,
-                minChildCount: policy.minChildCount,
-                maxChildCount: policy.maxChildCount,
-                minChildAge: policy.minChildAge,
-                maxChildAge: policy.maxChildAge,
-                requiresDualIncome: policy.requiresDualIncome,
-                requiresMultiChild: policy.requiresMultiChild,
-              }
-            );
-
-            // UserPolicy 레코드 확인/생성
-            const userPolicy = await prisma.userPolicy.upsert({
-              where: {
-                userId_policyId: {
-                  userId: userId,
-                  policyId: policy.id,
-                },
-              },
-              update: {
-                matchScore,
-                isEligible: matchScore > 0,
-              },
-              create: {
+          // UserPolicy 레코드 확인/생성
+          const userPolicy = await prisma.userPolicy.upsert({
+            where: {
+              userId_policyId: {
                 userId: userId,
                 policyId: policy.id,
-                matchScore,
-                isEligible: matchScore > 0,
               },
-            });
+            },
+            update: {
+              matchScore,
+              isEligible: matchScore > 0,
+            },
+            create: {
+              userId: userId,
+              policyId: policy.id,
+              matchScore,
+              isEligible: matchScore > 0,
+            },
+          });
 
-            return {
-              ...policy,
-              matchScore: userPolicy.matchScore,
-              isEligible: userPolicy.isEligible,
-              isBookmarked: userPolicy.isBookmarked,
-            };
-          })
-        );
-      }
+          return {
+            ...policy,
+            matchScore: userPolicy.matchScore,
+            isEligible: userPolicy.isEligible,
+            isBookmarked: userPolicy.isBookmarked,
+          };
+        })
+      );
     }
 
     console.log(`[API] Returning ${policies.length} policies`);

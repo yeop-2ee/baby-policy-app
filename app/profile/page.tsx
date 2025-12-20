@@ -26,9 +26,42 @@ export default function ProfilePage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // TODO: API 호출로 프로필 저장
-    alert('프로필이 저장되었습니다!');
-    router.push('/');
+    
+    // userId 가져오기 또는 생성
+    let userId = localStorage.getItem('userId');
+    if (!userId) {
+      userId = `user-${Date.now()}`;
+      localStorage.setItem('userId', userId);
+    }
+
+    try {
+      const response = await fetch('/api/profile', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          userId,
+          city: formData.city,
+          district: formData.district,
+          neighborhood: formData.neighborhood,
+          incomeLevel: formData.incomeLevel,
+          childCount: formData.childCount,
+          dualIncome: formData.dualIncome,
+          children: children,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('프로필 저장에 실패했습니다.');
+      }
+
+      alert('프로필이 저장되었습니다!');
+      router.push('/');
+    } catch (error) {
+      console.error('Error saving profile:', error);
+      alert('프로필 저장 중 오류가 발생했습니다.');
+    }
   };
 
   const addChild = () => {

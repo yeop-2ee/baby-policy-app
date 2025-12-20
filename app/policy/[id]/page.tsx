@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
 import { useQuery } from '@tanstack/react-query';
 import Link from 'next/link';
@@ -26,6 +26,38 @@ export default function PolicyDetailPage() {
     queryKey: ['policy', policyId],
     queryFn: () => fetchPolicy(policyId),
   });
+
+  // 북마크 상태 확인
+  useEffect(() => {
+    if (policyId) {
+      const userId = localStorage.getItem('userId') || 'default-user';
+      fetch(`/api/bookmark?userId=${userId}&policyId=${policyId}`)
+        .then(res => res.json())
+        .then(data => setIsBookmarked(data.isBookmarked || false))
+        .catch(err => console.error('Error fetching bookmark status:', err));
+    }
+  }, [policyId]);
+
+  const toggleBookmark = async () => {
+    const userId = localStorage.getItem('userId') || 'default-user';
+    
+    try {
+      const response = await fetch('/api/bookmark', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ userId, policyId }),
+      });
+
+      if (response.ok) {
+        const result = await response.json();
+        setIsBookmarked(result.isBookmarked);
+      }
+    } catch (error) {
+      console.error('Error toggling bookmark:', error);
+    }
+  };
 
   if (isLoading) {
     return (
@@ -58,10 +90,11 @@ export default function PolicyDetailPage() {
             <h1 className="text-xl font-bold text-gray-900">정책 상세</h1>
           </Link>
           <button
-            onClick={() => setIsBookmarked(!isBookmarked)}
-            className={`p-2 rounded-lg ${
+            onClick={toggleBookmark}
+            className={`p-2 rounded-lg transition-colors ${
               isBookmarked ? 'text-yellow-500' : 'text-gray-400'
             } hover:bg-gray-100`}
+            title={isBookmarked ? '즐겨찾기 해제' : '즐겨찾기 추가'}
           >
             <FiBookmark className={`w-6 h-6 ${isBookmarked ? 'fill-current' : ''}`} />
           </button>

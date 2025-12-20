@@ -1,16 +1,25 @@
 'use client';
 
-import { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useQuery } from '@tanstack/react-query';
 import { Navbar } from '@/components/Navbar';
 import { FiArrowLeft, FiSearch, FiFilter, FiBookmark, FiExternalLink } from 'react-icons/fi';
 import { formatDate, formatCurrency, calculateDDay } from '@/lib/utils';
 
-async function fetchPolicies(category?: string | null) {
-  const url = category && category !== '전체'
-    ? `/api/policies?category=${encodeURIComponent(category)}`
-    : '/api/policies';
+async function fetchPolicies(category?: string | null, filterByLocation?: boolean) {
+  const params = new URLSearchParams();
+  if (category && category !== '전체') {
+    params.append('category', category);
+  }
+  if (filterByLocation) {
+    params.append('filterByLocation', 'true');
+  }
+  // 임시로 userId를 localStorage에서 가져오거나, 실제 인증 시스템을 사용
+  const userId = localStorage.getItem('userId') || 'default-user';
+  params.append('userId', userId);
+  
+  const url = `/api/policies?${params.toString()}`;
   
   console.log('[fetchPolicies] Fetching from:', url);
   
@@ -28,12 +37,56 @@ async function fetchPolicies(category?: string | null) {
 export default function PoliciesPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const [filterByLocation, setFilterByLocation] = useState(false);
+  const [bookmarkedPolicies, setBookmarkedPolicies] = useState<Set<string>>(new Set());
 
   const { data, isLoading, error } = useQuery({
-    queryKey: ['policies', selectedCategory],
-    queryFn: () => fetchPolicies(selectedCategory),
+    queryKey: ['policies', selectedCategory, filterByLocation],
+    queryFn: () => fetchPolicies(selectedCategory, filterByLocation),
     retry: 1,
   });
+
+  // 북마크 상태 초기화
+  useEffect(() => {
+    if (data) {
+      const bookmarked = new Set<string>(
+        data.filter((p: any) => p.isBookmarked).map((p: any) => p.id)
+      );
+      setBookmarkedPolicies(bookmarked);
+    }
+  }, [data]);
+
+  const toggleBookmark = async (policyId: string, e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    const userId = localStorage.getItem('userId') || 'default-user';
+    
+    try {
+      const response = await fetch('/api/bookmark', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ userId, policyId }),
+      });
+
+      if (response.ok) {
+        const result = await response.json();
+        setBookmarkedPolicies(prev => {
+          const newSet = new Set(prev);
+          if (result.isBookmarked) {
+            newSet.add(policyId);
+          } else {
+            newSet.delete(policyId);
+          }
+          return newSet;
+        });
+      }
+    } catch (error) {
+      console.error('Error toggling bookmark:', error);
+    }
+  };
 
   // 디버깅용
   if (data) {
@@ -80,6 +133,26 @@ export default function PoliciesPage() {
       </header>
 
       <main className="max-w-4xl mx-auto px-4 py-6">
+        {/* 지역 필터 토글 */}
+        <div className="bg-white rounded-xl p-4 shadow-sm mb-4">
+          <label className="flex items-center gap-2 cursor-pointer">
+            <input
+              type="checkbox"
+              checked={filterByLocation}
+              onChange={(e) => setFilterByLocation(e.target.checked)}
+              className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+            />
+            <span className="text-sm font-medium text-gray-700">
+              내 지역 정책만 보기
+            </span>
+          </label>
+          {filterByLocation && (
+            <p className="text-xs text-gray-500 mt-2">
+              프로필에 설정한 지역의 정책만 표시됩니다
+            </p>
+          )}
+        </div>
+
         {/* 카테고리 필터 */}
         <div className="flex gap-2 mb-6 overflow-x-auto pb-2">
           {categories.map((category) => (
@@ -142,13 +215,19 @@ export default function PoliciesPage() {
                     <p className="text-sm text-gray-600 mb-3">{policy.description}</p>
                   </div>
                   <button
-                    onClick={(e) => {
-                      e.preventDefault();
-                      // 북마크 토글
-                    }}
-                    className="ml-2 text-gray-400 hover:text-yellow-500"
+                    onClick={(e) => toggleBookmark(policy.id, e)}
+                    className={`ml-2 transition-colors ${
+                      bookmarkedPolicies.has(policy.id)
+                        ? 'text-yellow-500'
+                        : 'text-gray-400 hover:text-yellow-500'
+                    }`}
+                    title={bookmarkedPolicies.has(policy.id) ? '즐겨찾기 해제' : '즐겨찾기 추가'}
                   >
-                    <FiBookmark className="w-5 h-5" />
+                    <FiBookmark 
+                      className={`w-5 h-5 ${
+                        bookmarkedPolicies.has(policy.id) ? 'fill-current' : ''
+                      }`} 
+                    />
                   </button>
                 </div>
 
