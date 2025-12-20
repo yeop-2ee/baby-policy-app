@@ -49,15 +49,32 @@ export async function POST(request: Request) {
     });
 
     // 프로필 정보를 텍스트로 변환
-    const profileText = userProfile
-      ? `사용자 프로필:
-- 거주지: ${userProfile.city} ${userProfile.district || ''} ${userProfile.neighborhood || ''}
-- 소득 수준: ${userProfile.incomeLevel || '미설정'}
-- 자녀 수: ${userProfile.childCount}명
-- 맞벌이: ${userProfile.dualIncome ? '예' : '아니오'}
-- 다자녀: ${userProfile.multiChild ? '예' : '아니오'}
-${userProfile.children.length > 0 ? `- 자녀 정보:\n${userProfile.children.map((c: any, i: number) => `  ${i + 1}. ${c.name || '이름 없음'}, 나이: ${c.age}세`).join('\n')}` : ''}`
-      : '사용자 프로필이 설정되지 않았습니다.';
+    let profileText = '';
+    if (userProfile) {
+      profileText = `사용자 프로필:\n`;
+      profileText += `- 거주지: ${userProfile.city} ${userProfile.district || ''} ${userProfile.neighborhood || ''}\n`;
+      profileText += `- 소득 수준: ${userProfile.incomeLevel || '미설정'}\n`;
+      
+      if (userProfile.hasChildren) {
+        profileText += `- 출산 상태: 출산 후\n`;
+        profileText += `- 자녀 수: ${userProfile.childCount}명\n`;
+        profileText += `- 맞벌이: ${userProfile.dualIncome ? '예' : '아니오'}\n`;
+        profileText += `- 다자녀: ${userProfile.multiChild ? '예' : '아니오'}\n`;
+        if (userProfile.children && userProfile.children.length > 0) {
+          profileText += `- 자녀 정보:\n${userProfile.children.map((c: any, i: number) => `  ${i + 1}. ${c.name || '이름 없음'}, 나이: ${c.age}세`).join('\n')}`;
+        }
+      } else {
+        profileText += `- 출산 상태: 출산 전\n`;
+        if (userProfile.isPregnant) {
+          profileText += `- 임신 중: 예 (${userProfile.pregnancyWeek || 0}주)\n`;
+        } else if (userProfile.planningPregnancy) {
+          profileText += `- 출산 계획: 예\n`;
+        }
+        profileText += `- 맞벌이: ${userProfile.dualIncome ? '예' : '아니오'}\n`;
+      }
+    } else {
+      profileText = '사용자 프로필이 설정되지 않았습니다.';
+    }
 
     // 정책 목록을 텍스트로 변환
     const policiesText = policies
@@ -76,7 +93,15 @@ ${userProfile.children.length > 0 ? `- 자녀 정보:\n${userProfile.children.ma
 
     // Gemini API 호출
     const apiKey = getGeminiApiKey();
-    const prompt = `당신은 육아 정책 추천 전문가입니다. 사용자의 상황을 분석하고 적합한 정책을 간결하게 추천해주세요.
+    
+    // 사용자 질문이 정책 관련인지 일반 육아/임신 질문인지 판단
+    const isPolicyQuestion = message.includes('정책') || message.includes('혜택') || message.includes('지원') || message.includes('수당') || message.includes('급여');
+    
+    let prompt = '';
+    
+    if (isPolicyQuestion && policiesText) {
+      // 정책 관련 질문인 경우
+      prompt = `당신은 육아 정책 추천 전문가입니다. 사용자의 상황을 분석하고 적합한 정책을 간결하게 추천해주세요.
 
 ${profileText}
 
@@ -98,6 +123,26 @@ ${policiesText}
 1. 정책명 - 간단한 설명 [정책ID:xxx]
 2. 정책명 - 간단한 설명 [정책ID:xxx]
 3. 정책명 - 간단한 설명 [정책ID:xxx]`;
+    } else {
+      // 일반 육아/임신 관련 질문인 경우
+      prompt = `당신은 육아 및 임신 전문 상담사입니다. 사용자의 상황에 맞는 실용적이고 간결한 조언을 제공해주세요.
+
+${profileText}
+
+사용자 메시지: ${message}
+
+중요 지침:
+1. 답변은 매우 간결하고 핵심만 전달하세요. 불필요한 설명은 제거하세요.
+2. 마크다운 특수문자(*, **, #, -, 등)를 절대 사용하지 마세요. 일반 텍스트만 사용하세요.
+3. 사용자 프로필 정보를 반드시 고려하여 맞춤형 답변을 제공하세요.
+4. 실용적이고 구체적인 조언을 제공하세요.
+5. 한국어로 답변하세요.
+6. 인사말이나 불필요한 수식어는 생략하세요.
+7. 답변은 3-5문장 이내로 간결하게 작성하세요.
+8. 필요시 정책 추천도 포함할 수 있지만, 정책 ID는 [정책ID:xxx] 형식으로 포함하세요.
+
+답변은 핵심만 간결하게 작성하세요.`;
+    }
 
     const response = await fetch(
       `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp:generateContent?key=${apiKey}`,
@@ -117,10 +162,10 @@ ${policiesText}
             },
           ],
           generationConfig: {
-            temperature: 0.5,
+            temperature: 0.4,
             topK: 40,
-            topP: 0.9,
-            maxOutputTokens: 500,
+            topP: 0.85,
+            maxOutputTokens: 400,
           },
         }),
       }

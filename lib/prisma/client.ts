@@ -84,3 +84,8 @@ export type Review = Prisma.ReviewModel
  * 
  */
 export type Calculation = Prisma.CalculationModel
+/**
+ * Model Checklist
+ * 
+ */
+export type Checklist = Prisma.ChecklistModel

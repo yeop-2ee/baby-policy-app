@@ -56,7 +56,8 @@ export const ModelName = {
   UserPolicy: 'UserPolicy',
   Notification: 'Notification',
   Review: 'Review',
-  Calculation: 'Calculation'
+  Calculation: 'Calculation',
+  Checklist: 'Checklist'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -210,6 +211,23 @@ export const CalculationScalarFieldEnum = {
 } as const
 
 export type CalculationScalarFieldEnum = (typeof CalculationScalarFieldEnum)[keyof typeof CalculationScalarFieldEnum]
+
+
+export const ChecklistScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  type: 'type',
+  title: 'title',
+  description: 'description',
+  category: 'category',
+  isCompleted: 'isCompleted',
+  dueDate: 'dueDate',
+  priority: 'priority',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ChecklistScalarFieldEnum = (typeof ChecklistScalarFieldEnum)[keyof typeof ChecklistScalarFieldEnum]
 
 
 export const SortOrder = {

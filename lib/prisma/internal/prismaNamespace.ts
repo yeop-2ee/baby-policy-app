@@ -397,7 +397,8 @@ export const ModelName = {
   UserPolicy: 'UserPolicy',
   Notification: 'Notification',
   Review: 'Review',
-  Calculation: 'Calculation'
+  Calculation: 'Calculation',
+  Checklist: 'Checklist'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -413,7 +414,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "userProfile" | "child" | "policy" | "userPolicy" | "notification" | "review" | "calculation"
+    modelProps: "user" | "userProfile" | "child" | "policy" | "userPolicy" | "notification" | "review" | "calculation" | "checklist"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1009,6 +1010,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    Checklist: {
+      payload: Prisma.$ChecklistPayload<ExtArgs>
+      fields: Prisma.ChecklistFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.ChecklistFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChecklistPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.ChecklistFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChecklistPayload>
+        }
+        findFirst: {
+          args: Prisma.ChecklistFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChecklistPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.ChecklistFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChecklistPayload>
+        }
+        findMany: {
+          args: Prisma.ChecklistFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChecklistPayload>[]
+        }
+        create: {
+          args: Prisma.ChecklistCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChecklistPayload>
+        }
+        createMany: {
+          args: Prisma.ChecklistCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.ChecklistCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChecklistPayload>[]
+        }
+        delete: {
+          args: Prisma.ChecklistDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChecklistPayload>
+        }
+        update: {
+          args: Prisma.ChecklistUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChecklistPayload>
+        }
+        deleteMany: {
+          args: Prisma.ChecklistDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.ChecklistUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.ChecklistUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChecklistPayload>[]
+        }
+        upsert: {
+          args: Prisma.ChecklistUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChecklistPayload>
+        }
+        aggregate: {
+          args: Prisma.ChecklistAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateChecklist>
+        }
+        groupBy: {
+          args: Prisma.ChecklistGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ChecklistGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.ChecklistCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ChecklistCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -1185,6 +1260,23 @@ export const CalculationScalarFieldEnum = {
 export type CalculationScalarFieldEnum = (typeof CalculationScalarFieldEnum)[keyof typeof CalculationScalarFieldEnum]
 
 
+export const ChecklistScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  type: 'type',
+  title: 'title',
+  description: 'description',
+  category: 'category',
+  isCompleted: 'isCompleted',
+  dueDate: 'dueDate',
+  priority: 'priority',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ChecklistScalarFieldEnum = (typeof ChecklistScalarFieldEnum)[keyof typeof ChecklistScalarFieldEnum]
+
+
 export const SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -1336,6 +1428,7 @@ export type GlobalOmitConfig = {
   notification?: Prisma.NotificationOmit
   review?: Prisma.ReviewOmit
   calculation?: Prisma.CalculationOmit
+  checklist?: Prisma.ChecklistOmit
 }
 
 /* Types for Logging */

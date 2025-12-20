@@ -18,6 +18,22 @@ export function calculateAge(birthDate: Date): number {
   return age;
 }
 
+// 생후 개월 수 계산
+export function calculateMonthsOld(birthDate: Date | string): number {
+  const birth = typeof birthDate === 'string' ? new Date(birthDate) : birthDate;
+  const today = new Date();
+  
+  let months = (today.getFullYear() - birth.getFullYear()) * 12;
+  months += today.getMonth() - birth.getMonth();
+  
+  // 일자가 지나지 않았으면 1개월 빼기
+  if (today.getDate() < birth.getDate()) {
+    months--;
+  }
+  
+  return Math.max(0, months);
+}
+
 // 날짜 포맷팅
 export function formatDate(date: Date | string | null | undefined): string {
   if (!date) return '';

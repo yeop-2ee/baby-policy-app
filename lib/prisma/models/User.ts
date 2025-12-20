@@ -187,6 +187,7 @@ export type UserWhereInput = {
   notifications?: Prisma.NotificationListRelationFilter
   reviews?: Prisma.ReviewListRelationFilter
   calculations?: Prisma.CalculationListRelationFilter
+  checklists?: Prisma.ChecklistListRelationFilter
 }
 
 export type UserOrderByWithRelationInput = {
@@ -200,6 +201,7 @@ export type UserOrderByWithRelationInput = {
   notifications?: Prisma.NotificationOrderByRelationAggregateInput
   reviews?: Prisma.ReviewOrderByRelationAggregateInput
   calculations?: Prisma.CalculationOrderByRelationAggregateInput
+  checklists?: Prisma.ChecklistOrderByRelationAggregateInput
 }
 
 export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -216,6 +218,7 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   notifications?: Prisma.NotificationListRelationFilter
   reviews?: Prisma.ReviewListRelationFilter
   calculations?: Prisma.CalculationListRelationFilter
+  checklists?: Prisma.ChecklistListRelationFilter
 }, "id" | "email">
 
 export type UserOrderByWithAggregationInput = {
@@ -251,6 +254,7 @@ export type UserCreateInput = {
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
   reviews?: Prisma.ReviewCreateNestedManyWithoutUserInput
   calculations?: Prisma.CalculationCreateNestedManyWithoutUserInput
+  checklists?: Prisma.ChecklistCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateInput = {
@@ -264,6 +268,7 @@ export type UserUncheckedCreateInput = {
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
   reviews?: Prisma.ReviewUncheckedCreateNestedManyWithoutUserInput
   calculations?: Prisma.CalculationUncheckedCreateNestedManyWithoutUserInput
+  checklists?: Prisma.ChecklistUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserUpdateInput = {
@@ -277,6 +282,7 @@ export type UserUpdateInput = {
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
   reviews?: Prisma.ReviewUpdateManyWithoutUserNestedInput
   calculations?: Prisma.CalculationUpdateManyWithoutUserNestedInput
+  checklists?: Prisma.ChecklistUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateInput = {
@@ -290,6 +296,7 @@ export type UserUncheckedUpdateInput = {
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
   reviews?: Prisma.ReviewUncheckedUpdateManyWithoutUserNestedInput
   calculations?: Prisma.CalculationUncheckedUpdateManyWithoutUserNestedInput
+  checklists?: Prisma.ChecklistUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateManyInput = {
@@ -427,6 +434,20 @@ export type UserUpdateOneRequiredWithoutCalculationsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutCalculationsInput, Prisma.UserUpdateWithoutCalculationsInput>, Prisma.UserUncheckedUpdateWithoutCalculationsInput>
 }
 
+export type UserCreateNestedOneWithoutChecklistsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutChecklistsInput, Prisma.UserUncheckedCreateWithoutChecklistsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutChecklistsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutChecklistsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutChecklistsInput, Prisma.UserUncheckedCreateWithoutChecklistsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutChecklistsInput
+  upsert?: Prisma.UserUpsertWithoutChecklistsInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutChecklistsInput, Prisma.UserUpdateWithoutChecklistsInput>, Prisma.UserUncheckedUpdateWithoutChecklistsInput>
+}
+
 export type UserCreateWithoutProfileInput = {
   id?: string
   email?: string | null
@@ -437,6 +458,7 @@ export type UserCreateWithoutProfileInput = {
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
   reviews?: Prisma.ReviewCreateNestedManyWithoutUserInput
   calculations?: Prisma.CalculationCreateNestedManyWithoutUserInput
+  checklists?: Prisma.ChecklistCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutProfileInput = {
@@ -449,6 +471,7 @@ export type UserUncheckedCreateWithoutProfileInput = {
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
   reviews?: Prisma.ReviewUncheckedCreateNestedManyWithoutUserInput
   calculations?: Prisma.CalculationUncheckedCreateNestedManyWithoutUserInput
+  checklists?: Prisma.ChecklistUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutProfileInput = {
@@ -477,6 +500,7 @@ export type UserUpdateWithoutProfileInput = {
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
   reviews?: Prisma.ReviewUpdateManyWithoutUserNestedInput
   calculations?: Prisma.CalculationUpdateManyWithoutUserNestedInput
+  checklists?: Prisma.ChecklistUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutProfileInput = {
@@ -489,6 +513,7 @@ export type UserUncheckedUpdateWithoutProfileInput = {
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
   reviews?: Prisma.ReviewUncheckedUpdateManyWithoutUserNestedInput
   calculations?: Prisma.CalculationUncheckedUpdateManyWithoutUserNestedInput
+  checklists?: Prisma.ChecklistUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutMatchedPoliciesInput = {
@@ -501,6 +526,7 @@ export type UserCreateWithoutMatchedPoliciesInput = {
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
   reviews?: Prisma.ReviewCreateNestedManyWithoutUserInput
   calculations?: Prisma.CalculationCreateNestedManyWithoutUserInput
+  checklists?: Prisma.ChecklistCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutMatchedPoliciesInput = {
@@ -513,6 +539,7 @@ export type UserUncheckedCreateWithoutMatchedPoliciesInput = {
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
   reviews?: Prisma.ReviewUncheckedCreateNestedManyWithoutUserInput
   calculations?: Prisma.CalculationUncheckedCreateNestedManyWithoutUserInput
+  checklists?: Prisma.ChecklistUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutMatchedPoliciesInput = {
@@ -541,6 +568,7 @@ export type UserUpdateWithoutMatchedPoliciesInput = {
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
   reviews?: Prisma.ReviewUpdateManyWithoutUserNestedInput
   calculations?: Prisma.CalculationUpdateManyWithoutUserNestedInput
+  checklists?: Prisma.ChecklistUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutMatchedPoliciesInput = {
@@ -553,6 +581,7 @@ export type UserUncheckedUpdateWithoutMatchedPoliciesInput = {
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
   reviews?: Prisma.ReviewUncheckedUpdateManyWithoutUserNestedInput
   calculations?: Prisma.CalculationUncheckedUpdateManyWithoutUserNestedInput
+  checklists?: Prisma.ChecklistUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutNotificationsInput = {
@@ -565,6 +594,7 @@ export type UserCreateWithoutNotificationsInput = {
   matchedPolicies?: Prisma.UserPolicyCreateNestedManyWithoutUserInput
   reviews?: Prisma.ReviewCreateNestedManyWithoutUserInput
   calculations?: Prisma.CalculationCreateNestedManyWithoutUserInput
+  checklists?: Prisma.ChecklistCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutNotificationsInput = {
@@ -577,6 +607,7 @@ export type UserUncheckedCreateWithoutNotificationsInput = {
   matchedPolicies?: Prisma.UserPolicyUncheckedCreateNestedManyWithoutUserInput
   reviews?: Prisma.ReviewUncheckedCreateNestedManyWithoutUserInput
   calculations?: Prisma.CalculationUncheckedCreateNestedManyWithoutUserInput
+  checklists?: Prisma.ChecklistUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutNotificationsInput = {
@@ -605,6 +636,7 @@ export type UserUpdateWithoutNotificationsInput = {
   matchedPolicies?: Prisma.UserPolicyUpdateManyWithoutUserNestedInput
   reviews?: Prisma.ReviewUpdateManyWithoutUserNestedInput
   calculations?: Prisma.CalculationUpdateManyWithoutUserNestedInput
+  checklists?: Prisma.ChecklistUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutNotificationsInput = {
@@ -617,6 +649,7 @@ export type UserUncheckedUpdateWithoutNotificationsInput = {
   matchedPolicies?: Prisma.UserPolicyUncheckedUpdateManyWithoutUserNestedInput
   reviews?: Prisma.ReviewUncheckedUpdateManyWithoutUserNestedInput
   calculations?: Prisma.CalculationUncheckedUpdateManyWithoutUserNestedInput
+  checklists?: Prisma.ChecklistUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutReviewsInput = {
@@ -629,6 +662,7 @@ export type UserCreateWithoutReviewsInput = {
   matchedPolicies?: Prisma.UserPolicyCreateNestedManyWithoutUserInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
   calculations?: Prisma.CalculationCreateNestedManyWithoutUserInput
+  checklists?: Prisma.ChecklistCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutReviewsInput = {
@@ -641,6 +675,7 @@ export type UserUncheckedCreateWithoutReviewsInput = {
   matchedPolicies?: Prisma.UserPolicyUncheckedCreateNestedManyWithoutUserInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
   calculations?: Prisma.CalculationUncheckedCreateNestedManyWithoutUserInput
+  checklists?: Prisma.ChecklistUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutReviewsInput = {
@@ -669,6 +704,7 @@ export type UserUpdateWithoutReviewsInput = {
   matchedPolicies?: Prisma.UserPolicyUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
   calculations?: Prisma.CalculationUpdateManyWithoutUserNestedInput
+  checklists?: Prisma.ChecklistUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutReviewsInput = {
@@ -681,6 +717,7 @@ export type UserUncheckedUpdateWithoutReviewsInput = {
   matchedPolicies?: Prisma.UserPolicyUncheckedUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
   calculations?: Prisma.CalculationUncheckedUpdateManyWithoutUserNestedInput
+  checklists?: Prisma.ChecklistUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutCalculationsInput = {
@@ -693,6 +730,7 @@ export type UserCreateWithoutCalculationsInput = {
   matchedPolicies?: Prisma.UserPolicyCreateNestedManyWithoutUserInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
   reviews?: Prisma.ReviewCreateNestedManyWithoutUserInput
+  checklists?: Prisma.ChecklistCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutCalculationsInput = {
@@ -705,6 +743,7 @@ export type UserUncheckedCreateWithoutCalculationsInput = {
   matchedPolicies?: Prisma.UserPolicyUncheckedCreateNestedManyWithoutUserInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
   reviews?: Prisma.ReviewUncheckedCreateNestedManyWithoutUserInput
+  checklists?: Prisma.ChecklistUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutCalculationsInput = {
@@ -733,6 +772,7 @@ export type UserUpdateWithoutCalculationsInput = {
   matchedPolicies?: Prisma.UserPolicyUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
   reviews?: Prisma.ReviewUpdateManyWithoutUserNestedInput
+  checklists?: Prisma.ChecklistUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutCalculationsInput = {
@@ -745,6 +785,75 @@ export type UserUncheckedUpdateWithoutCalculationsInput = {
   matchedPolicies?: Prisma.UserPolicyUncheckedUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
   reviews?: Prisma.ReviewUncheckedUpdateManyWithoutUserNestedInput
+  checklists?: Prisma.ChecklistUncheckedUpdateManyWithoutUserNestedInput
+}
+
+export type UserCreateWithoutChecklistsInput = {
+  id?: string
+  email?: string | null
+  name?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  profile?: Prisma.UserProfileCreateNestedOneWithoutUserInput
+  matchedPolicies?: Prisma.UserPolicyCreateNestedManyWithoutUserInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
+  reviews?: Prisma.ReviewCreateNestedManyWithoutUserInput
+  calculations?: Prisma.CalculationCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutChecklistsInput = {
+  id?: string
+  email?: string | null
+  name?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  profile?: Prisma.UserProfileUncheckedCreateNestedOneWithoutUserInput
+  matchedPolicies?: Prisma.UserPolicyUncheckedCreateNestedManyWithoutUserInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
+  reviews?: Prisma.ReviewUncheckedCreateNestedManyWithoutUserInput
+  calculations?: Prisma.CalculationUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutChecklistsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutChecklistsInput, Prisma.UserUncheckedCreateWithoutChecklistsInput>
+}
+
+export type UserUpsertWithoutChecklistsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutChecklistsInput, Prisma.UserUncheckedUpdateWithoutChecklistsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutChecklistsInput, Prisma.UserUncheckedCreateWithoutChecklistsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutChecklistsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutChecklistsInput, Prisma.UserUncheckedUpdateWithoutChecklistsInput>
+}
+
+export type UserUpdateWithoutChecklistsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  profile?: Prisma.UserProfileUpdateOneWithoutUserNestedInput
+  matchedPolicies?: Prisma.UserPolicyUpdateManyWithoutUserNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
+  reviews?: Prisma.ReviewUpdateManyWithoutUserNestedInput
+  calculations?: Prisma.CalculationUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutChecklistsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  profile?: Prisma.UserProfileUncheckedUpdateOneWithoutUserNestedInput
+  matchedPolicies?: Prisma.UserPolicyUncheckedUpdateManyWithoutUserNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
+  reviews?: Prisma.ReviewUncheckedUpdateManyWithoutUserNestedInput
+  calculations?: Prisma.CalculationUncheckedUpdateManyWithoutUserNestedInput
 }
 
 
@@ -757,6 +866,7 @@ export type UserCountOutputType = {
   notifications: number
   reviews: number
   calculations: number
+  checklists: number
 }
 
 export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -764,6 +874,7 @@ export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.I
   notifications?: boolean | UserCountOutputTypeCountNotificationsArgs
   reviews?: boolean | UserCountOutputTypeCountReviewsArgs
   calculations?: boolean | UserCountOutputTypeCountCalculationsArgs
+  checklists?: boolean | UserCountOutputTypeCountChecklistsArgs
 }
 
 /**
@@ -804,6 +915,13 @@ export type UserCountOutputTypeCountCalculationsArgs<ExtArgs extends runtime.Typ
   where?: Prisma.CalculationWhereInput
 }
 
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountChecklistsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ChecklistWhereInput
+}
+
 
 export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -816,6 +934,7 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   notifications?: boolean | Prisma.User$notificationsArgs<ExtArgs>
   reviews?: boolean | Prisma.User$reviewsArgs<ExtArgs>
   calculations?: boolean | Prisma.User$calculationsArgs<ExtArgs>
+  checklists?: boolean | Prisma.User$checklistsArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
 
@@ -850,6 +969,7 @@ export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   notifications?: boolean | Prisma.User$notificationsArgs<ExtArgs>
   reviews?: boolean | Prisma.User$reviewsArgs<ExtArgs>
   calculations?: boolean | Prisma.User$calculationsArgs<ExtArgs>
+  checklists?: boolean | Prisma.User$checklistsArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type UserIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -863,6 +983,7 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     notifications: Prisma.$NotificationPayload<ExtArgs>[]
     reviews: Prisma.$ReviewPayload<ExtArgs>[]
     calculations: Prisma.$CalculationPayload<ExtArgs>[]
+    checklists: Prisma.$ChecklistPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1269,6 +1390,7 @@ export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Typ
   notifications<T extends Prisma.User$notificationsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$notificationsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$NotificationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   reviews<T extends Prisma.User$reviewsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$reviewsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ReviewPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   calculations<T extends Prisma.User$calculationsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$calculationsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CalculationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  checklists<T extends Prisma.User$checklistsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$checklistsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ChecklistPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1801,6 +1923,30 @@ export type User$calculationsArgs<ExtArgs extends runtime.Types.Extensions.Inter
   take?: number
   skip?: number
   distinct?: Prisma.CalculationScalarFieldEnum | Prisma.CalculationScalarFieldEnum[]
+}
+
+/**
+ * User.checklists
+ */
+export type User$checklistsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Checklist
+   */
+  select?: Prisma.ChecklistSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Checklist
+   */
+  omit?: Prisma.ChecklistOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ChecklistInclude<ExtArgs> | null
+  where?: Prisma.ChecklistWhereInput
+  orderBy?: Prisma.ChecklistOrderByWithRelationInput | Prisma.ChecklistOrderByWithRelationInput[]
+  cursor?: Prisma.ChecklistWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ChecklistScalarFieldEnum | Prisma.ChecklistScalarFieldEnum[]
 }
 
 /**

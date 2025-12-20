@@ -6,6 +6,7 @@ import { Navbar } from '@/components/Navbar';
 import { FiArrowLeft, FiPlus, FiX, FiTrash2 } from 'react-icons/fi';
 import Link from 'next/link';
 import { getUserId, saveUserProfile, getUserProfile, clearUserData } from '@/lib/storage';
+import { calculateMonthsOld } from '@/lib/utils';
 
 export default function ProfilePage() {
   const router = useRouter();
@@ -542,13 +543,20 @@ export default function ProfilePage() {
                       onChange={(e) => updateChild(index, 'name', e.target.value)}
                       className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                     />
-                    <input
-                      type="date"
-                      value={child.birthDate}
-                      onChange={(e) => updateChild(index, 'birthDate', e.target.value)}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                      required
-                    />
+                    <div>
+                      <input
+                        type="date"
+                        value={child.birthDate}
+                        onChange={(e) => updateChild(index, 'birthDate', e.target.value)}
+                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                        required
+                      />
+                      {child.birthDate && (
+                        <p className="text-xs text-blue-600 mt-1">
+                          생후 {calculateMonthsOld(child.birthDate)}개월
+                        </p>
+                      )}
+                    </div>
                   </div>
                 </div>
               ))}

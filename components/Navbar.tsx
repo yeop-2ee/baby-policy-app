@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { FiHome, FiUser, FiBell, FiDollarSign, FiMessageSquare, FiBookmark } from 'react-icons/fi';
+import { FiHome, FiUser, FiBell, FiDollarSign, FiMessageSquare, FiBookmark, FiCheckSquare } from 'react-icons/fi';
 
 export function Navbar() {
   const pathname = usePathname();
@@ -11,7 +11,7 @@ export function Navbar() {
     { href: '/', label: '홈', icon: FiHome },
     { href: '/policies', label: '정책', icon: FiMessageSquare },
     { href: '/bookmarks', label: '즐겨찾기', icon: FiBookmark },
-    { href: '/calculator', label: '계산기', icon: FiDollarSign },
+    { href: '/checklist', label: '체크리스트', icon: FiCheckSquare },
     { href: '/profile', label: '프로필', icon: FiUser },
   ];
 

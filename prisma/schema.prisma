@@ -24,6 +24,7 @@ model User {
   notifications Notification[]
   reviews       Review[]
   calculations  Calculation[]
+  checklists    Checklist[]
 }
 
 // 사용자 프로필 정보
@@ -185,4 +186,22 @@ model Calculation {
   result          String   // 계산 결과 (JSON)
   
   createdAt       DateTime @default(now())
+}
+
+// 체크리스트
+model Checklist {
+  id              String   @id @default(cuid())
+  userId          String
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  type            String   // 체크리스트 유형 ("pregnancy" | "postpartum")
+  title           String   // 체크리스트 항목 제목
+  description     String?  // 상세 설명
+  category        String?  // 카테고리 (예: "건강", "준비물", "행정", "의료")
+  isCompleted     Boolean  @default(false) // 완료 여부
+  dueDate         DateTime? // 마감일 (선택사항)
+  priority        String?  // 우선순위 ("high" | "medium" | "low")
+  
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
 }
