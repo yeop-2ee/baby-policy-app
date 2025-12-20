@@ -57,13 +57,26 @@ npm run dev
 
 브라우저에서 [http://localhost:3000](http://localhost:3000)을 열어 확인하세요.
 
-### 데이터베이스 설정
+### 환경변수 설정
+
+`.env.example` 파일을 참고하여 `.env` 파일을 생성하고 다음을 설정하세요:
+
+```bash
+# .env.example을 .env로 복사
+cp .env.example .env
+```
 
 `.env` 파일에 다음을 추가하세요:
 
 ```
-DATABASE_URL="file:./dev.db"
+DATABASE_URL="file:./prisma/dev.db"
+GEMINI_API_KEY="your-gemini-api-key-here"
 ```
+
+**보안 주의사항:**
+- `.env` 파일은 절대 Git에 커밋하지 마세요
+- API 키는 서버 사이드에서만 사용하세요
+- 프로덕션 환경에서는 환경변수로 직접 설정하세요
 
 ## 프로젝트 구조
 
