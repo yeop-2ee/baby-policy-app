@@ -27,21 +27,49 @@ export async function GET(request: Request) {
 
 export async function POST(request: Request) {
   try {
-    const { userId, itemId, isCompleted } = await request.json();
+    const body = await request.json();
+    const { userId, itemId, isCompleted, type, title, description, category, priority, dueDate } = body;
 
-    if (!userId || !itemId) {
-      return NextResponse.json({ error: 'UserId and itemId are required' }, { status: 400 });
+    // 체크리스트 항목 추가
+    if (type && title) {
+      if (!userId) {
+        return NextResponse.json({ error: 'UserId is required' }, { status: 400 });
+      }
+
+      const checklist = await prisma.checklist.create({
+        data: {
+          userId,
+          type,
+          title,
+          description: description || null,
+          category: category || null,
+          priority: priority || null,
+          dueDate: dueDate ? new Date(dueDate) : null,
+          isCompleted: false,
+        },
+      });
+
+      return NextResponse.json({ success: true, checklist });
     }
 
-    const checklist = await prisma.checklist.update({
-      where: { id: itemId },
-      data: { isCompleted },
-    });
+    // 체크리스트 항목 완료 상태 토글
+    if (itemId !== undefined) {
+      if (!userId || !itemId) {
+        return NextResponse.json({ error: 'UserId and itemId are required' }, { status: 400 });
+      }
 
-    return NextResponse.json({ success: true, checklist });
+      const checklist = await prisma.checklist.update({
+        where: { id: itemId },
+        data: { isCompleted },
+      });
+
+      return NextResponse.json({ success: true, checklist });
+    }
+
+    return NextResponse.json({ error: 'Invalid request' }, { status: 400 });
   } catch (error) {
-    console.error('Error updating checklist:', error);
-    return NextResponse.json({ error: 'Failed to update checklist' }, { status: 500 });
+    console.error('Error in checklist POST:', error);
+    return NextResponse.json({ error: 'Failed to process request' }, { status: 500 });
   }
 }
 

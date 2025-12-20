@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import Link from 'next/link';
 import { Navbar } from '@/components/Navbar';
-import { FiArrowLeft, FiCheck, FiCircle, FiCalendar, FiAlertCircle } from 'react-icons/fi';
+import { FiArrowLeft, FiCheck, FiCircle, FiCalendar, FiAlertCircle, FiPlus, FiX } from 'react-icons/fi';
 import { getUserId, getUserProfile } from '@/lib/storage';
 import { calculateMonthsOld } from '@/lib/utils';
 
@@ -44,6 +44,15 @@ export default function ChecklistPage() {
   const queryClient = useQueryClient();
   const userId = getUserId();
   const profile = getUserProfile();
+  const [showAddModal, setShowAddModal] = useState(false);
+  const [newItem, setNewItem] = useState({
+    type: profile?.isPregnant ? 'pregnancy' : profile?.hasChildren ? 'postpartum' : 'pregnancy',
+    title: '',
+    description: '',
+    category: '',
+    priority: 'medium',
+    dueDate: '',
+  });
   
   const { data: checklist = [], isLoading } = useQuery({
     queryKey: ['checklist', userId],
@@ -55,6 +64,35 @@ export default function ChecklistPage() {
       toggleChecklistItem(userId, itemId, isCompleted),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['checklist', userId] });
+    },
+  });
+
+  const addItemMutation = useMutation({
+    mutationFn: async (item: typeof newItem) => {
+      const response = await fetch('/api/checklist', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId, ...item }),
+      });
+      if (!response.ok) {
+        throw new Error('Failed to add checklist item');
+      }
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['checklist', userId] });
+      setShowAddModal(false);
+      setNewItem({
+        type: profile?.isPregnant ? 'pregnancy' : profile?.hasChildren ? 'postpartum' : 'pregnancy',
+        title: '',
+        description: '',
+        category: '',
+        priority: 'medium',
+        dueDate: '',
+      });
+    },
+    onError: (error) => {
+      alert(`체크리스트 추가 실패: ${error.message}`);
     },
   });
 
@@ -90,11 +128,20 @@ export default function ChecklistPage() {
   return (
     <div className="min-h-screen bg-gray-50 pb-20">
       <header className="bg-white shadow-sm sticky top-0 z-40">
-        <div className="max-w-4xl mx-auto px-4 py-4 flex items-center">
-          <Link href="/" className="mr-4">
-            <FiArrowLeft className="w-6 h-6 text-gray-600" />
-          </Link>
-          <h1 className="text-xl font-bold text-gray-900">체크리스트</h1>
+        <div className="max-w-4xl mx-auto px-4 py-4 flex items-center justify-between">
+          <div className="flex items-center">
+            <Link href="/" className="mr-4">
+              <FiArrowLeft className="w-6 h-6 text-gray-600" />
+            </Link>
+            <h1 className="text-xl font-bold text-gray-900">체크리스트</h1>
+          </div>
+          <button
+            onClick={() => setShowAddModal(true)}
+            className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-blue-700 transition-colors"
+          >
+            <FiPlus className="w-5 h-5" />
+            <span>추가</span>
+          </button>
         </div>
       </header>
 
@@ -266,6 +313,139 @@ export default function ChecklistPage() {
                 </Link>
               </div>
             )}
+          </div>
+        )}
+
+        {/* 항목 추가 모달 */}
+        {showAddModal && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+            <div className="bg-white rounded-xl p-6 w-full max-w-md max-h-[90vh] overflow-y-auto">
+              <div className="flex items-center justify-between mb-4">
+                <h2 className="text-xl font-bold text-gray-900">체크리스트 항목 추가</h2>
+                <button
+                  onClick={() => setShowAddModal(false)}
+                  className="text-gray-400 hover:text-gray-600"
+                >
+                  <FiX className="w-6 h-6" />
+                </button>
+              </div>
+
+              <form
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  if (!newItem.title.trim()) {
+                    alert('제목을 입력해주세요.');
+                    return;
+                  }
+                  addItemMutation.mutate(newItem);
+                }}
+                className="space-y-4"
+              >
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    유형
+                  </label>
+                  <select
+                    value={newItem.type}
+                    onChange={(e) => setNewItem({ ...newItem, type: e.target.value })}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    required
+                  >
+                    <option value="pregnancy">임신 중</option>
+                    <option value="postpartum">출산 후</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    제목 *
+                  </label>
+                  <input
+                    type="text"
+                    value={newItem.title}
+                    onChange={(e) => setNewItem({ ...newItem, title: e.target.value })}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    placeholder="예: 산전 진료 예약"
+                    required
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    설명 (선택사항)
+                  </label>
+                  <textarea
+                    value={newItem.description}
+                    onChange={(e) => setNewItem({ ...newItem, description: e.target.value })}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    rows={3}
+                    placeholder="상세 설명을 입력하세요"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    카테고리 (선택사항)
+                  </label>
+                  <select
+                    value={newItem.category}
+                    onChange={(e) => setNewItem({ ...newItem, category: e.target.value })}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  >
+                    <option value="">선택하세요</option>
+                    <option value="의료">의료</option>
+                    <option value="행정">행정</option>
+                    <option value="건강">건강</option>
+                    <option value="준비물">준비물</option>
+                    <option value="기타">기타</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    우선순위
+                  </label>
+                  <select
+                    value={newItem.priority}
+                    onChange={(e) => setNewItem({ ...newItem, priority: e.target.value })}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  >
+                    <option value="low">일반</option>
+                    <option value="medium">중요</option>
+                    <option value="high">긴급</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    마감일 (선택사항)
+                  </label>
+                  <input
+                    type="date"
+                    value={newItem.dueDate}
+                    onChange={(e) => setNewItem({ ...newItem, dueDate: e.target.value })}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  />
+                </div>
+
+                <div className="flex gap-3 pt-4">
+                  <button
+                    type="button"
+                    onClick={() => setShowAddModal(false)}
+                    className="flex-1 px-4 py-2 border border-gray-300 rounded-lg font-semibold text-gray-700 hover:bg-gray-50 transition-colors"
+                  >
+                    취소
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={addItemMutation.isPending}
+                    className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 transition-colors disabled:bg-gray-300 disabled:cursor-not-allowed"
+                  >
+                    {addItemMutation.isPending ? '추가 중...' : '추가하기'}
+                  </button>
+                </div>
+              </form>
+            </div>
           </div>
         )}
       </main>
