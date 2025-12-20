@@ -1,12 +1,25 @@
 import { PrismaClient } from '../lib/prisma/client';
 import { config } from 'dotenv';
+import path from 'path';
 
 config();
+
+// DATABASE_URL 경로 변환
+if (process.env.DATABASE_URL && process.env.DATABASE_URL.startsWith('file:./')) {
+  const relativePath = process.env.DATABASE_URL.replace('file:', '');
+  const absolutePath = path.join(process.cwd(), relativePath);
+  process.env.DATABASE_URL = `file:${absolutePath}`;
+  console.log('📁 Using database:', process.env.DATABASE_URL);
+}
 
 const prisma = new PrismaClient();
 
 async function main() {
   console.log('🌱 정책 데이터 시딩 시작...');
+  
+  // 기존 정책 개수 확인
+  const existingCount = await prisma.policy.count();
+  console.log(`📊 현재 데이터베이스에 ${existingCount}개의 정책이 있습니다.`);
 
   const policies = [
     {
@@ -299,6 +312,10 @@ async function main() {
     },
   ];
 
+  // 기존 정책 모두 삭제 (선택사항 - 주석 처리하면 중복 방지)
+  // await prisma.policy.deleteMany({});
+  // console.log('🗑️  기존 정책 삭제됨');
+
   for (const policy of policies) {
     const existing = await prisma.policy.findFirst({
       where: { title: policy.title },
@@ -313,6 +330,10 @@ async function main() {
       console.log(`⏭️  ${policy.title} 이미 존재함`);
     }
   }
+  
+  // 최종 개수 확인
+  const finalCount = await prisma.policy.count();
+  console.log(`📊 시딩 완료 후 총 ${finalCount}개의 정책이 있습니다.`);
 
   console.log('🎉 정책 데이터 시딩 완료!');
 }

@@ -8,9 +8,12 @@ export async function GET(request: Request) {
     const userId = searchParams.get('userId');
     const category = searchParams.get('category');
 
+    console.log('[API] DATABASE_URL:', process.env.DATABASE_URL);
+    console.log('[API] Category filter:', category);
+
     // 정책 조회
     let policies = await prisma.policy.findMany({
-      where: category ? { category } : undefined,
+      where: category && category !== '전체' ? { category } : undefined,
       include: {
         reviews: {
           take: 3,
@@ -19,6 +22,8 @@ export async function GET(request: Request) {
       },
       orderBy: { createdAt: 'desc' },
     });
+
+    console.log(`[API] Found ${policies.length} policies`);
 
     // 사용자 프로필이 있으면 매칭 점수 계산
     if (userId) {
@@ -91,11 +96,16 @@ export async function GET(request: Request) {
       }
     }
 
+    console.log(`[API] Returning ${policies.length} policies`);
     return NextResponse.json({ policies });
   } catch (error) {
     console.error('Error fetching policies:', error);
     return NextResponse.json(
-      { error: 'Failed to fetch policies' },
+      { 
+        error: 'Failed to fetch policies',
+        message: error instanceof Error ? error.message : 'Unknown error',
+        policies: [] 
+      },
       { status: 500 }
     );
   }

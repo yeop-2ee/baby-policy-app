@@ -8,15 +8,21 @@ import { FiArrowLeft, FiSearch, FiFilter, FiBookmark, FiExternalLink } from 'rea
 import { formatDate, formatCurrency, calculateDDay } from '@/lib/utils';
 
 async function fetchPolicies(category?: string | null) {
-  const url = category 
-    ? `/api/policies?category=${category}`
+  const url = category && category !== '전체'
+    ? `/api/policies?category=${encodeURIComponent(category)}`
     : '/api/policies';
+  
+  console.log('[fetchPolicies] Fetching from:', url);
+  
   const response = await fetch(url);
   if (!response.ok) {
-    throw new Error('Failed to fetch policies');
+    const errorText = await response.text();
+    console.error('[fetchPolicies] Error response:', response.status, errorText);
+    throw new Error(`Failed to fetch policies: ${response.status} ${errorText}`);
   }
   const data = await response.json();
-  return data.policies;
+  console.log('[fetchPolicies] Received data:', data);
+  return data.policies || [];
 }
 
 export default function PoliciesPage() {
@@ -26,7 +32,16 @@ export default function PoliciesPage() {
   const { data, isLoading, error } = useQuery({
     queryKey: ['policies', selectedCategory],
     queryFn: () => fetchPolicies(selectedCategory),
+    retry: 1,
   });
+
+  // 디버깅용
+  if (data) {
+    console.log('[PoliciesPage] Data received:', data.length, 'policies');
+  }
+  if (error) {
+    console.error('[PoliciesPage] Error:', error);
+  }
 
   const policies = data || [];
 
@@ -91,7 +106,8 @@ export default function PoliciesPage() {
 
         {error && (
           <div className="text-center py-12">
-            <p className="text-red-500">정책을 불러오는 중 오류가 발생했습니다.</p>
+            <p className="text-red-500 mb-2">정책을 불러오는 중 오류가 발생했습니다.</p>
+            <p className="text-sm text-gray-500">{error instanceof Error ? error.message : '알 수 없는 오류'}</p>
           </div>
         )}
 
@@ -164,9 +180,17 @@ export default function PoliciesPage() {
           </div>
         )}
 
-        {!isLoading && !error && filteredPolicies.length === 0 && (
+        {!isLoading && !error && filteredPolicies.length === 0 && policies.length === 0 && (
+          <div className="text-center py-12">
+            <p className="text-gray-500 mb-2">정책이 없습니다</p>
+            <p className="text-sm text-gray-400">데이터베이스에 정책이 없습니다. 시드 스크립트를 실행해주세요.</p>
+          </div>
+        )}
+
+        {!isLoading && !error && policies.length > 0 && filteredPolicies.length === 0 && (
           <div className="text-center py-12">
             <p className="text-gray-500">검색 결과가 없습니다</p>
+            <p className="text-sm text-gray-400 mt-2">다른 검색어나 카테고리를 시도해보세요.</p>
           </div>
         )}
       </main>
