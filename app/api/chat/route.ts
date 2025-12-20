@@ -76,7 +76,7 @@ ${userProfile.children.length > 0 ? `- 자녀 정보:\n${userProfile.children.ma
 
     // Gemini API 호출
     const apiKey = getGeminiApiKey();
-    const prompt = `당신은 육아 정책 추천 전문가입니다. 사용자의 상황을 분석하고 적합한 정책을 추천해주세요.
+    const prompt = `당신은 육아 정책 추천 전문가입니다. 사용자의 상황을 분석하고 적합한 정책을 간결하게 추천해주세요.
 
 ${profileText}
 
@@ -85,19 +85,19 @@ ${profileText}
 사용 가능한 정책 목록:
 ${policiesText}
 
-지침:
-1. 사용자의 상황과 메시지를 분석하세요.
-2. 사용자 프로필과 사용 가능한 정책 목록을 참고하여 가장 적합한 정책 3-5개를 추천하세요.
-3. 각 정책을 추천할 때는 정책 ID를 반드시 포함하세요.
-4. 친근하고 도움이 되는 톤으로 답변하세요.
-5. 정책 추천 시 구체적인 이유를 설명하세요.
+중요 지침:
+1. 답변은 매우 간결하고 핵심만 전달하세요. 불필요한 설명은 제거하세요.
+2. 마크다운 특수문자(*, **, #, -, 등)를 절대 사용하지 마세요. 일반 텍스트만 사용하세요.
+3. 사용자 프로필과 사용 가능한 정책 목록을 참고하여 가장 적합한 정책 3-5개만 추천하세요.
+4. 각 정책 추천 시 정책 ID를 반드시 [정책ID:정책id값] 형식으로 포함하세요.
+5. 각 정책은 한 줄로 간단히 설명하세요.
 6. 한국어로 답변하세요.
-7. 정책 ID는 [정책ID:정책id값] 형식으로 표시하세요.
+7. 인사말이나 불필요한 수식어는 생략하세요.
 
-답변 형식:
-- 추천 정책을 번호와 함께 나열
-- 각 정책의 제목, 주요 혜택, 추천 이유 설명
-- 정책 ID를 [정책ID:xxx] 형식으로 포함`;
+답변 형식 예시:
+1. 정책명 - 간단한 설명 [정책ID:xxx]
+2. 정책명 - 간단한 설명 [정책ID:xxx]
+3. 정책명 - 간단한 설명 [정책ID:xxx]`;
 
     const response = await fetch(
       `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp:generateContent?key=${apiKey}`,
@@ -117,10 +117,10 @@ ${policiesText}
             },
           ],
           generationConfig: {
-            temperature: 0.7,
+            temperature: 0.5,
             topK: 40,
-            topP: 0.95,
-            maxOutputTokens: 2048,
+            topP: 0.9,
+            maxOutputTokens: 500,
           },
         }),
       }

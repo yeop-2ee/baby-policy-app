@@ -16,7 +16,7 @@ export function Chatbot() {
   const [messages, setMessages] = useState<Message[]>([
     {
       role: 'assistant',
-      content: '안녕하세요! 육아 정조준 챗봇입니다. 😊\n\n거주지, 소득, 자녀 정보 등을 알려주시면 맞춤형 정책을 추천해드립니다.\n\n예시:\n- "서울 강남구에 살고 있고, 3살 아이가 있어요"\n- "맞벌이 가정인데 육아 지원 정책이 궁금해요"\n- "다자녀 가정을 위한 혜택을 알고 싶어요"',
+      content: '안녕하세요! 육아 정조준 챗봇입니다.\n\n거주지, 소득, 자녀 정보 등을 알려주시면 맞춤형 정책을 추천해드립니다.\n\n예시:\n서울 강남구에 살고 있고 3살 아이가 있어요\n맞벌이 가정인데 육아 지원 정책이 궁금해요\n다자녀 가정을 위한 혜택을 알고 싶어요',
     },
   ]);
   const [input, setInput] = useState('');
