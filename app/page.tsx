@@ -1,8 +1,38 @@
+'use client';
+
+import { useQuery } from '@tanstack/react-query';
 import Link from 'next/link';
 import { Navbar } from '@/components/Navbar';
-import { FiSearch, FiCalendar, FiTrendingUp, FiUsers, FiFileText } from 'react-icons/fi';
+import { FiSearch, FiCalendar, FiTrendingUp, FiUsers, FiFileText, FiAlertCircle, FiExternalLink } from 'react-icons/fi';
+import { calculateDDay, formatCurrency } from '@/lib/utils';
+
+async function fetchPolicies() {
+  const response = await fetch('/api/policies');
+  if (!response.ok) {
+    throw new Error('Failed to fetch policies');
+  }
+  const data = await response.json();
+  return data.policies || [];
+}
 
 export default function Home() {
+  const { data: policies = [], isLoading } = useQuery({
+    queryKey: ['policies'],
+    queryFn: fetchPolicies,
+  });
+
+  // 가장 긴급한 D-Day 정책 하나만 찾기 (7일 이하)
+  const urgentPolicy = policies
+    .filter((policy: any) => {
+      if (!policy.applicationEnd) return false;
+      const dDay = calculateDDay(policy.applicationEnd);
+      return dDay !== null && dDay >= 0 && dDay <= 7;
+    })
+    .sort((a: any, b: any) => {
+      const dDayA = calculateDDay(a.applicationEnd) || 999;
+      const dDayB = calculateDDay(b.applicationEnd) || 999;
+      return dDayA - dDayB;
+    })[0]; // 가장 임박한 것 하나만
   return (
     <div className="min-h-screen bg-gray-50 pb-20">
       {/* 헤더 */}
@@ -18,6 +48,54 @@ export default function Home() {
       </header>
 
       <main className="max-w-4xl mx-auto px-4 py-6">
+        {/* 긴급 D-Day 섹션 - 가장 임박한 것 하나만 */}
+        {urgentPolicy && (() => {
+          const dDay = calculateDDay(urgentPolicy.applicationEnd);
+          const isUrgent = dDay !== null && dDay <= 3;
+          
+          return (
+            <Link
+              href={`/policy/${urgentPolicy.id}`}
+              className="block bg-gradient-to-r from-red-500 to-orange-500 rounded-2xl p-6 text-white mb-6 hover:from-red-600 hover:to-orange-600 transition-all shadow-lg"
+            >
+              <div className="flex items-center gap-2 mb-3">
+                <FiAlertCircle className="w-6 h-6 animate-pulse" />
+                <h2 className="text-xl font-bold">⚠️ 긴급! 마감 임박</h2>
+                <span className={`ml-auto text-sm font-bold px-3 py-1 rounded-full ${
+                  isUrgent ? 'bg-red-600 text-white' : 'bg-orange-600 text-white'
+                }`}>
+                  {dDay === 0 ? '오늘 마감!' : dDay === 1 ? '내일 마감!' : `D-${dDay}`}
+                </span>
+              </div>
+              
+              <div className="bg-white/20 rounded-lg p-4 mb-4">
+                <h3 className="font-bold text-lg mb-2">{urgentPolicy.title}</h3>
+                <p className="text-sm text-red-100 line-clamp-2 mb-3">
+                  {urgentPolicy.description}
+                </p>
+                <div className="flex items-center justify-between">
+                  {urgentPolicy.benefitAmount && (
+                    <div>
+                      <p className="text-xs text-red-200 mb-1">혜택 금액</p>
+                      <p className="text-lg font-bold text-white">
+                        {formatCurrency(urgentPolicy.benefitAmount)}
+                      </p>
+                    </div>
+                  )}
+                  <div className="flex items-center gap-2 text-sm">
+                    <span className="text-red-100">자세히 보기</span>
+                    <FiExternalLink className="w-4 h-4" />
+                  </div>
+                </div>
+              </div>
+              
+              <p className="text-xs text-red-100 text-center">
+                💡 놓치지 마세요! 지금 바로 신청하세요
+              </p>
+            </Link>
+          );
+        })()}
+
         {/* 프로필 설정 안내 */}
         <div className="bg-gradient-to-r from-blue-500 to-purple-600 rounded-2xl p-6 text-white mb-6">
           <h2 className="text-xl font-bold mb-2">프로필을 설정해주세요</h2>
@@ -107,40 +185,66 @@ export default function Home() {
 
         {/* 추천 정책 섹션 */}
         <section className="bg-white rounded-xl p-6 shadow-sm">
-          <h2 className="text-lg font-bold text-gray-900 mb-4">추천 정책</h2>
-          <div className="space-y-4">
-            <div className="border border-gray-200 rounded-lg p-4">
-              <div className="flex items-start justify-between mb-2">
-                <h3 className="font-semibold text-gray-900">아동수당</h3>
-                <span className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded">
-                  중앙정부
-                </span>
-              </div>
-              <p className="text-sm text-gray-600 mb-2">
-                0~7세 아동에게 월 20만원 지급
-              </p>
-              <div className="flex items-center text-xs text-gray-500">
-                <FiCalendar className="w-4 h-4 mr-1" />
-                <span>상시 신청</span>
-              </div>
-            </div>
-
-            <div className="border border-gray-200 rounded-lg p-4">
-              <div className="flex items-start justify-between mb-2">
-                <h3 className="font-semibold text-gray-900">출산 축하금</h3>
-                <span className="text-xs bg-purple-100 text-purple-700 px-2 py-1 rounded">
-                  지자체
-                </span>
-              </div>
-              <p className="text-sm text-gray-600 mb-2">
-                첫째 50만원, 둘째 100만원, 셋째 이상 200만원
-              </p>
-              <div className="flex items-center text-xs text-gray-500">
-                <FiCalendar className="w-4 h-4 mr-1" />
-                <span>출생 후 1년 이내</span>
-              </div>
-            </div>
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-lg font-bold text-gray-900">추천 정책</h2>
+            <Link
+              href="/policies"
+              className="text-sm text-blue-600 hover:text-blue-700"
+            >
+              전체 보기 →
+            </Link>
           </div>
+          
+          {isLoading ? (
+            <div className="text-center py-8">
+              <p className="text-gray-500">로딩 중...</p>
+            </div>
+          ) : (
+            <div className="space-y-4">
+              {policies.slice(0, 3).map((policy: any) => (
+                <Link
+                  key={policy.id}
+                  href={`/policy/${policy.id}`}
+                  className="block border border-gray-200 rounded-lg p-4 hover:border-blue-300 hover:shadow-sm transition-all"
+                >
+                  <div className="flex items-start justify-between mb-2">
+                    <h3 className="font-semibold text-gray-900">{policy.title}</h3>
+                    <span className={`text-xs px-2 py-1 rounded ${
+                      policy.isCentralGov
+                        ? 'bg-blue-100 text-blue-700'
+                        : 'bg-purple-100 text-purple-700'
+                    }`}>
+                      {policy.isCentralGov ? '중앙정부' : '지자체'}
+                    </span>
+                  </div>
+                  <p className="text-sm text-gray-600 mb-2 line-clamp-2">
+                    {policy.description}
+                  </p>
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center text-xs text-gray-500">
+                      <FiCalendar className="w-4 h-4 mr-1" />
+                      <span>
+                        {policy.applicationEnd
+                          ? `마감: ${new Date(policy.applicationEnd).toLocaleDateString('ko-KR')}`
+                          : '상시 신청'}
+                      </span>
+                    </div>
+                    {policy.benefitAmount && (
+                      <span className="text-xs font-semibold text-blue-600">
+                        {formatCurrency(policy.benefitAmount)}
+                      </span>
+                    )}
+                  </div>
+                </Link>
+              ))}
+              
+              {policies.length === 0 && (
+                <div className="text-center py-8">
+                  <p className="text-gray-500">정책이 없습니다</p>
+                </div>
+              )}
+            </div>
+          )}
         </section>
       </main>
 
