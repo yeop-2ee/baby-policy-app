@@ -2,38 +2,46 @@
 
 import { useState } from 'react';
 import { useParams } from 'next/navigation';
+import { useQuery } from '@tanstack/react-query';
 import Link from 'next/link';
 import { Navbar } from '@/components/Navbar';
 import { FiArrowLeft, FiExternalLink, FiBookmark, FiCalendar, FiDollarSign, FiFileText, FiUsers } from 'react-icons/fi';
 import { formatDate, formatCurrency, calculateDDay } from '@/lib/utils';
+
+async function fetchPolicy(id: string) {
+  const response = await fetch(`/api/policy/${id}`);
+  if (!response.ok) {
+    throw new Error('Failed to fetch policy');
+  }
+  const data = await response.json();
+  return data.policy;
+}
 
 export default function PolicyDetailPage() {
   const params = useParams();
   const policyId = params.id as string;
   const [isBookmarked, setIsBookmarked] = useState(false);
 
-  // 샘플 정책 데이터 (실제로는 API에서 가져옴)
-  const policy = {
-    id: policyId,
-    title: '아동수당',
-    description: '0~7세 아동에게 월 20만원을 지급하는 정책입니다. 소득 수준과 관계없이 모든 가구가 신청할 수 있습니다.',
-    category: '육아',
-    benefitAmount: 200000,
-    benefitType: '현금',
-    benefitDescription: '월 20만원씩 매달 지급되며, 아동이 8세가 되는 달까지 지급됩니다.',
-    isCentralGov: true,
-    govLevel: '중앙',
-    applicationStart: null,
-    applicationEnd: null,
-    applicationUrl: 'https://www.gov.kr',
-    requiredDocuments: JSON.stringify(['주민등록등본', '가족관계증명서', '신청서']),
-    infographicUrl: null,
-    cardImageUrl: null,
-    targetCity: null,
-    targetDistrict: null,
-    minChildAge: 0,
-    maxChildAge: 7,
-  };
+  const { data: policy, isLoading, error } = useQuery({
+    queryKey: ['policy', policyId],
+    queryFn: () => fetchPolicy(policyId),
+  });
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gray-50 pb-20 flex items-center justify-center">
+        <p className="text-gray-500">로딩 중...</p>
+      </div>
+    );
+  }
+
+  if (error || !policy) {
+    return (
+      <div className="min-h-screen bg-gray-50 pb-20 flex items-center justify-center">
+        <p className="text-red-500">정책을 불러오는 중 오류가 발생했습니다.</p>
+      </div>
+    );
+  }
 
   const requiredDocs = policy.requiredDocuments 
     ? JSON.parse(policy.requiredDocuments) 

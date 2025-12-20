@@ -2,62 +2,39 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import { useQuery } from '@tanstack/react-query';
 import { Navbar } from '@/components/Navbar';
 import { FiArrowLeft, FiSearch, FiFilter, FiBookmark, FiExternalLink } from 'react-icons/fi';
 import { formatDate, formatCurrency, calculateDDay } from '@/lib/utils';
+
+async function fetchPolicies(category?: string | null) {
+  const url = category 
+    ? `/api/policies?category=${category}`
+    : '/api/policies';
+  const response = await fetch(url);
+  if (!response.ok) {
+    throw new Error('Failed to fetch policies');
+  }
+  const data = await response.json();
+  return data.policies;
+}
 
 export default function PoliciesPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
 
-  // 샘플 정책 데이터
-  const policies = [
-    {
-      id: '1',
-      title: '아동수당',
-      description: '0~7세 아동에게 월 20만원 지급',
-      category: '육아',
-      benefitAmount: 200000,
-      benefitType: '현금',
-      isCentralGov: true,
-      applicationStart: null,
-      applicationEnd: null,
-      applicationUrl: 'https://www.gov.kr',
-      matchScore: 100,
-    },
-    {
-      id: '2',
-      title: '출산 축하금',
-      description: '첫째 50만원, 둘째 100만원, 셋째 이상 200만원',
-      category: '출산',
-      benefitAmount: 500000,
-      benefitType: '현금',
-      isCentralGov: false,
-      applicationStart: null,
-      applicationEnd: null,
-      applicationUrl: null,
-      matchScore: 95,
-    },
-    {
-      id: '3',
-      title: '육아휴직 급여',
-      description: '육아휴직 기간 중 급여 지급',
-      category: '육아',
-      benefitAmount: null,
-      benefitType: '급여',
-      isCentralGov: true,
-      applicationStart: null,
-      applicationEnd: null,
-      applicationUrl: null,
-      matchScore: 90,
-    },
-  ];
+  const { data, isLoading, error } = useQuery({
+    queryKey: ['policies', selectedCategory],
+    queryFn: () => fetchPolicies(selectedCategory),
+  });
 
-  const categories = ['전체', '출산', '육아', '교육', '돌봄'];
+  const policies = data || [];
 
-  const filteredPolicies = policies.filter((policy) => {
+  const categories = ['전체', '출산', '육아', '교육', '돌봄', '주거'];
+
+  const filteredPolicies = policies.filter((policy: any) => {
     const matchesSearch = policy.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         policy.description.toLowerCase().includes(searchQuery.toLowerCase());
+                         (policy.description || '').toLowerCase().includes(searchQuery.toLowerCase());
     const matchesCategory = !selectedCategory || selectedCategory === '전체' || policy.category === selectedCategory;
     return matchesSearch && matchesCategory;
   });
@@ -106,8 +83,21 @@ export default function PoliciesPage() {
         </div>
 
         {/* 정책 목록 */}
-        <div className="space-y-4">
-          {filteredPolicies.map((policy) => {
+        {isLoading && (
+          <div className="text-center py-12">
+            <p className="text-gray-500">로딩 중...</p>
+          </div>
+        )}
+
+        {error && (
+          <div className="text-center py-12">
+            <p className="text-red-500">정책을 불러오는 중 오류가 발생했습니다.</p>
+          </div>
+        )}
+
+        {!isLoading && !error && (
+          <div className="space-y-4">
+            {filteredPolicies.map((policy: any) => {
             const dDay = policy.applicationEnd ? calculateDDay(policy.applicationEnd) : null;
             
             return (
@@ -171,9 +161,10 @@ export default function PoliciesPage() {
               </Link>
             );
           })}
-        </div>
+          </div>
+        )}
 
-        {filteredPolicies.length === 0 && (
+        {!isLoading && !error && filteredPolicies.length === 0 && (
           <div className="text-center py-12">
             <p className="text-gray-500">검색 결과가 없습니다</p>
           </div>
