@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import Link from 'next/link';
 import { Navbar } from '@/components/Navbar';
 import { FiArrowLeft, FiExternalLink, FiBookmark, FiCalendar, FiDollarSign, FiFileText, FiUsers } from 'react-icons/fi';
@@ -21,6 +21,7 @@ async function fetchPolicy(id: string) {
 export default function PolicyDetailPage() {
   const params = useParams();
   const policyId = params.id as string;
+  const queryClient = useQueryClient();
   const [isBookmarked, setIsBookmarked] = useState(false);
 
   const { data: policy, isLoading, error } = useQuery({
@@ -52,10 +53,9 @@ export default function PolicyDetailPage() {
     }
   }, [policyId]);
 
-  const toggleBookmark = async () => {
-    const userId = getUserId();
-    
-    try {
+  const bookmarkMutation = useMutation({
+    mutationFn: async () => {
+      const userId = getUserId();
       const response = await fetch('/api/bookmark', {
         method: 'POST',
         headers: {
@@ -63,21 +63,37 @@ export default function PolicyDetailPage() {
         },
         body: JSON.stringify({ userId, policyId }),
       });
-
-      if (response.ok) {
-        const result = await response.json();
-        setIsBookmarked(result.isBookmarked);
-        
-        // localStorage 동기화
-        if (result.isBookmarked) {
-          addBookmark(policyId);
-        } else {
-          removeBookmark(policyId);
-        }
+      
+      if (!response.ok) {
+        throw new Error('Failed to toggle bookmark');
       }
-    } catch (error) {
+      
+      return response.json();
+    },
+    onSuccess: (result) => {
+      setIsBookmarked(result.isBookmarked);
+      
+      // localStorage 동기화
+      if (result.isBookmarked) {
+        addBookmark(policyId);
+      } else {
+        removeBookmark(policyId);
+      }
+      
+      // 관련 쿼리 무효화하여 즉시 재조회
+      queryClient.invalidateQueries({ queryKey: ['policies'] });
+      queryClient.invalidateQueries({ queryKey: ['bookmarkedPolicies'] });
+      queryClient.invalidateQueries({ queryKey: ['policy', policyId] });
+      queryClient.invalidateQueries({ queryKey: ['homePolicies'] });
+    },
+    onError: (error) => {
       console.error('Error toggling bookmark:', error);
-    }
+      alert('즐겨찾기 변경에 실패했습니다.');
+    },
+  });
+
+  const toggleBookmark = () => {
+    bookmarkMutation.mutate();
   };
 
   if (isLoading) {

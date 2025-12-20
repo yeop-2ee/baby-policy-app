@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Navbar } from '@/components/Navbar';
 import { FiArrowLeft, FiSearch, FiFilter, FiBookmark, FiExternalLink } from 'react-icons/fi';
 import { formatDate, formatCurrency, calculateDDay } from '@/lib/utils';
@@ -35,6 +35,7 @@ async function fetchPolicies(category?: string | null, filterByLocation?: boolea
 }
 
 export default function PoliciesPage() {
+  const queryClient = useQueryClient();
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [filterByLocation, setFilterByLocation] = useState(false);
@@ -64,13 +65,9 @@ export default function PoliciesPage() {
     }
   }, [data]);
 
-  const toggleBookmark = async (policyId: string, e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    
-    const userId = getUserId();
-    
-    try {
+  const bookmarkMutation = useMutation({
+    mutationFn: async ({ policyId }: { policyId: string }) => {
+      const userId = getUserId();
       const response = await fetch('/api/bookmark', {
         method: 'POST',
         headers: {
@@ -78,31 +75,50 @@ export default function PoliciesPage() {
         },
         body: JSON.stringify({ userId, policyId }),
       });
-
-      if (response.ok) {
-        const result = await response.json();
-        
-        // localStorage 업데이트
-        if (result.isBookmarked) {
-          addBookmark(policyId);
-        } else {
-          removeBookmark(policyId);
-        }
-        
-        // 상태 업데이트
-        setBookmarkedPolicies(prev => {
-          const newSet = new Set(prev);
-          if (result.isBookmarked) {
-            newSet.add(policyId);
-          } else {
-            newSet.delete(policyId);
-          }
-          return newSet;
-        });
+      
+      if (!response.ok) {
+        throw new Error('Failed to toggle bookmark');
       }
-    } catch (error) {
+      
+      return response.json();
+    },
+    onSuccess: (result, variables) => {
+      const { policyId } = variables;
+      
+      // localStorage 업데이트
+      if (result.isBookmarked) {
+        addBookmark(policyId);
+      } else {
+        removeBookmark(policyId);
+      }
+      
+      // 로컬 상태 즉시 업데이트
+      setBookmarkedPolicies(prev => {
+        const newSet = new Set(prev);
+        if (result.isBookmarked) {
+          newSet.add(policyId);
+        } else {
+          newSet.delete(policyId);
+        }
+        return newSet;
+      });
+      
+      // 관련 쿼리 무효화하여 즉시 재조회
+      queryClient.invalidateQueries({ queryKey: ['policies'] });
+      queryClient.invalidateQueries({ queryKey: ['bookmarkedPolicies'] });
+      queryClient.invalidateQueries({ queryKey: ['policy', policyId] });
+      queryClient.invalidateQueries({ queryKey: ['homePolicies'] });
+    },
+    onError: (error) => {
       console.error('Error toggling bookmark:', error);
-    }
+      alert('즐겨찾기 변경에 실패했습니다.');
+    },
+  });
+
+  const toggleBookmark = (policyId: string, e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    bookmarkMutation.mutate({ policyId });
   };
 
   // 디버깅용
