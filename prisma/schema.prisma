@@ -3,10 +3,180 @@
 
 generator client {
   provider = "prisma-client"
-  output   = "../app/generated/prisma"
+  output   = "../lib/prisma"
 }
 
 datasource db {
   provider = "sqlite"
   url      = env("DATABASE_URL")
+}
+
+// 사용자 프로필
+model User {
+  id            String   @id @default(cuid())
+  email         String?  @unique
+  name          String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  
+  profile       UserProfile?
+  matchedPolicies UserPolicy[]
+  notifications Notification[]
+  reviews       Review[]
+  calculations  Calculation[]
+}
+
+// 사용자 프로필 정보
+model UserProfile {
+  id              String   @id @default(cuid())
+  userId          String   @unique
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  // 거주지 정보
+  city            String?  // 시
+  district        String?  // 구/군
+  neighborhood    String?  // 동
+  
+  // 가구 정보
+  incomeLevel     String?  // 소득 수준 (예: "하위50%", "중위50-100%", "상위10%")
+  childCount      Int      @default(0) // 자녀 수
+  dualIncome      Boolean  @default(false) // 맞벌이 여부
+  multiChild      Boolean  @default(false) // 다자녀 여부 (3명 이상)
+  
+  // 자녀 정보
+  children        Child[]
+  
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+// 자녀 정보
+model Child {
+  id              String   @id @default(cuid())
+  profileId       String
+  profile         UserProfile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  
+  name            String?
+  birthDate       DateTime // 생년월일
+  age             Int      // 나이 (자동 계산)
+  
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+// 정책 정보
+model Policy {
+  id              String   @id @default(cuid())
+  title           String   // 정책명
+  description     String?  // 설명
+  category        String   // 카테고리 (예: "출산", "육아", "교육", "돌봄")
+  
+  // 대상 조건
+  targetCity      String?  // 대상 시/도 (null이면 전국)
+  targetDistrict  String?  // 대상 구/군 (null이면 해당 시 전체)
+  minIncomeLevel  String?  // 최소 소득 수준
+  maxIncomeLevel  String?  // 최대 소득 수준
+  minChildCount   Int?     // 최소 자녀 수
+  maxChildCount   Int?     // 최대 자녀 수
+  minChildAge     Int?     // 최소 자녀 나이
+  maxChildAge     Int?     // 최대 자녀 나이
+  requiresDualIncome Boolean @default(false) // 맞벌이 필수 여부
+  requiresMultiChild Boolean @default(false) // 다자녀 필수 여부
+  
+  // 혜택 정보
+  benefitAmount   Int?     // 혜택 금액 (원)
+  benefitType     String?  // 혜택 유형 (예: "현금", "서비스", "할인")
+  benefitDescription String? // 혜택 상세 설명
+  
+  // 신청 정보
+  applicationStart DateTime? // 신청 시작일
+  applicationEnd   DateTime? // 신청 마감일
+  applicationUrl   String?   // 신청 링크
+  requiredDocuments String?  // 필요 서류 (JSON 배열)
+  
+  // 정부/지자체 구분
+  isCentralGov     Boolean  @default(true) // 중앙정부 여부
+  govLevel         String?  // 정부 수준 (예: "중앙", "시", "구")
+  
+  // 시각화 정보
+  infographicUrl   String?  // 인포그래픽 이미지 URL
+  cardImageUrl    String?  // 카드 이미지 URL
+  
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  
+  userPolicies    UserPolicy[]
+  reviews         Review[]
+}
+
+// 사용자-정책 매칭
+model UserPolicy {
+  id              String   @id @default(cuid())
+  userId          String
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  policyId        String
+  policy          Policy   @relation(fields: [policyId], references: [id], onDelete: Cascade)
+  
+  isEligible      Boolean  @default(true) // 자격 여부
+  matchScore      Int      @default(100) // 매칭 점수 (0-100)
+  isBookmarked    Boolean  @default(false) // 북마크 여부
+  isApplied       Boolean  @default(false) // 신청 여부
+  
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  
+  @@unique([userId, policyId])
+}
+
+// 알림
+model Notification {
+  id              String   @id @default(cuid())
+  userId          String
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  type            String   // 알림 유형 (예: "application_start", "application_end", "age_change", "new_policy")
+  title           String   // 알림 제목
+  message         String   // 알림 메시지
+  policyId        String?  // 관련 정책 ID
+  relatedDate     DateTime? // 관련 날짜 (신청 시작일, 마감일 등)
+  
+  isRead          Boolean  @default(false)
+  isSent          Boolean  @default(false) // 푸시 발송 여부
+  
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+// 정책 리뷰
+model Review {
+  id              String   @id @default(cuid())
+  userId          String
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  policyId        String
+  policy          Policy   @relation(fields: [policyId], references: [id], onDelete: Cascade)
+  
+  rating          Int      // 평점 (1-5)
+  title           String?  // 리뷰 제목
+  content         String   // 리뷰 내용
+  tips            String?  // 꿀팁
+  additionalDocs  String?  // 추가로 필요한 서류
+  
+  isVerified      Boolean  @default(false) // 검증된 리뷰 여부
+  helpfulCount    Int      @default(0) // 도움됨 수
+  
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+// 계산기 결과
+model Calculation {
+  id              String   @id @default(cuid())
+  userId          String
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  calculationType String   // 계산 유형 (예: "monthly_benefit", "parental_leave", "total_benefit")
+  inputData       String   // 입력 데이터 (JSON)
+  result          String   // 계산 결과 (JSON)
+  
+  createdAt       DateTime @default(now())
 }

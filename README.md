@@ -1,36 +1,118 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 우리 아이 정책 매칭 - 맞춤형 육아 정책 정보 서비스
 
-## Getting Started
+거주지, 소득, 자녀 정보를 바탕으로 맞춤형 육아 정책을 찾아드리는 서비스입니다. 중앙정부 및 지자체 전용 혜택까지 한눈에 확인할 수 있습니다.
 
-First, run the development server:
+## 주요 기능
+
+### ① 맞춤형 정책 필터링 (My Policy Match)
+- **프로필 설정**: 거주지(시/군/구), 가구 소득 수준, 자녀 수, 맞벌이 여부, 다자녀 여부 등을 입력
+- **자동 매칭**: 입력된 정보를 바탕으로 중앙정부 혜택뿐만 아니라 우리 동네 지자체 전용 혜택만 골라서 제공
+- **매칭 점수**: 각 정책에 대한 적합도를 0-100점으로 표시
+
+### ② 정책 알림 서비스 (D-Day 알림)
+- **신청 기한 푸시**: 아동수당, 어린이집 입소 신청, 돌봄 서비스 신청 등 자칫 놓치기 쉬운 신청 시작일과 마감일을 푸시 알림으로 제공
+- **나이별 정책 변화**: 아이가 초등학교에 입학하거나 연령이 바뀔 때 새로 받을 수 있는 혜택을 미리 알림
+
+### ③ '한눈에 보는' 정책 인포그래픽
+- 복잡한 법령을 쉽게: 긴 텍스트 대신 카드 뉴스나 인포그래픽으로 '누가, 언제, 얼마나' 받는지 핵심만 요약해 제공
+
+### ④ 모의 계산기 & 자격 진단
+- **"나는 얼마 받을까?"**: 부모 급여, 아동 수당 등을 합산하여 매달 실제로 수령하게 될 금액을 미리 계산
+- **맞벌이/외벌이 시뮬레이션**: 부모 휴직 시 받을 수 있는 육아휴직 급여를 세후 금액으로 미리 계산
+
+### ⑤ 정책 리뷰 & 꿀팁 커뮤니티
+- 실제 부모들의 생생한 후기 공간
+- 정책 신청 시 필요한 추가 서류나 꿀팁 공유
+
+### ⑥ 원클릭 서류 준비 가이드
+- 정책 신청에 필요한 서류 리스트 제공
+- 모바일에서 바로 발급받을 수 있는 정부24 링크 연결
+
+## 기술 스택
+
+- **Frontend**: Next.js 16, React 19, TypeScript, Tailwind CSS
+- **Backend**: Next.js API Routes
+- **Database**: SQLite (Prisma ORM)
+- **State Management**: Zustand, React Query
+- **Icons**: React Icons
+
+## 시작하기
+
+### 필수 요구사항
+- Node.js 18 이상
+- npm 또는 yarn
+
+### 설치 및 실행
 
 ```bash
+# 의존성 설치
+npm install
+
+# 데이터베이스 마이그레이션
+npx prisma migrate dev
+
+# 개발 서버 실행
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+브라우저에서 [http://localhost:3000](http://localhost:3000)을 열어 확인하세요.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### 데이터베이스 설정
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+`.env` 파일에 다음을 추가하세요:
 
-## Learn More
+```
+DATABASE_URL="file:./dev.db"
+```
 
-To learn more about Next.js, take a look at the following resources:
+## 프로젝트 구조
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```
+baby-policy-app/
+├── app/                    # Next.js App Router
+│   ├── api/               # API 라우트
+│   ├── profile/           # 프로필 설정 페이지
+│   ├── policies/          # 정책 목록 페이지
+│   ├── policy/[id]/       # 정책 상세 페이지
+│   ├── calculator/        # 계산기 페이지
+│   ├── notifications/     # 알림 페이지
+│   ├── reviews/           # 리뷰 커뮤니티 페이지
+│   └── documents/         # 서류 준비 가이드 페이지
+├── components/            # 재사용 가능한 컴포넌트
+├── lib/                   # 유틸리티 및 Prisma 클라이언트
+├── prisma/                # Prisma 스키마 및 마이그레이션
+└── public/                # 정적 파일
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## 주요 기능 상세
 
-## Deploy on Vercel
+### 프로필 설정
+- 거주지 정보 (시/도, 구/군, 동)
+- 가구 정보 (소득 수준, 자녀 수, 맞벌이 여부)
+- 자녀 정보 (이름, 생년월일)
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### 정책 매칭 알고리즘
+- 지역 조건 매칭
+- 자녀 수 및 나이 조건 매칭
+- 소득 수준 매칭
+- 맞벌이/다자녀 조건 매칭
+- 매칭 점수 계산 (0-100점)
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### 계산기 기능
+- 월 혜택 계산 (아동수당 등)
+- 육아휴직 급여 계산
+- 연간 총 혜택 예상액 계산
+
+## 향후 개발 계획
+
+- [ ] 푸시 알림 구현 (FCM 또는 Web Push)
+- [ ] 전문가 법률/세무 상담 기능
+- [ ] 프리미엄 리포트 기능
+- [ ] 지자체 협업 모델
+- [ ] 실제 정책 데이터 연동
+- [ ] 사용자 인증 시스템
+- [ ] 모바일 앱 (React Native)
+
+## 라이선스
+
+MIT
