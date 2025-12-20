@@ -287,21 +287,6 @@ export default function Home() {
           </div>
         )}
 
-        {/* 프로필 설정 안내 - 프로필이 없을 때만 표시 */}
-        {!hasProfile && (
-          <div className="bg-gradient-to-r from-blue-500 to-purple-600 rounded-2xl p-6 text-white mb-6">
-            <h2 className="text-xl font-bold mb-2">프로필을 설정해주세요</h2>
-            <p className="text-blue-100 mb-4">
-              거주지, 소득, 자녀 정보를 입력하면 맞춤형 정책을 추천해드립니다
-            </p>
-            <Link
-              href="/profile"
-              className="inline-block bg-white text-blue-600 px-6 py-2 rounded-lg font-semibold hover:bg-blue-50 transition-colors"
-            >
-              프로필 설정하기
-            </Link>
-          </div>
-        )}
 
         {/* 주요 기능 카드 */}
         <div className="grid grid-cols-2 gap-4 mb-6">
