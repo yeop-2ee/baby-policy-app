@@ -1,131 +1,201 @@
-# 육아 정조준 - 정책 조목조목 준비하기
+# 육아 정조준
 
-육아 정조준은 거주지, 소득, 자녀 정보를 바탕으로 맞춤형 육아 정책을 찾아드리는 서비스입니다. 중앙정부 및 지자체 전용 혜택까지 한눈에 확인할 수 있습니다.
+> 정책 조목조목 준비하는 맞춤형 육아 정책 안내 서비스
+
+거주지·소득·자녀 정보를 입력하면 중앙정부 및 지자체 전용 정책을 자동으로 매칭하고, 신청 준비부터 D-Day 알림까지 한 곳에서 관리할 수 있습니다.
+
+---
 
 ## 주요 기능
 
-### ① 맞춤형 정책 필터링 (My Policy Match)
-- **프로필 설정**: 거주지(시/군/구), 가구 소득 수준, 자녀 수, 맞벌이 여부, 다자녀 여부 등을 입력
-- **자동 매칭**: 입력된 정보를 바탕으로 중앙정부 혜택뿐만 아니라 우리 동네 지자체 전용 혜택만 골라서 제공
-- **매칭 점수**: 각 정책에 대한 적합도를 0-100점으로 표시
+| 기능 | 설명 |
+|------|------|
+| **맞춤 정책 매칭** | 프로필 기반 정책 자동 필터링 + 매칭 점수(0-100점) 산출 |
+| **정책 알림** | D-Day 기반 신청 마감·시작 알림 |
+| **정책 인포그래픽** | 카드 이미지로 한눈에 보는 정책 요약 |
+| **모의 계산기** | 아동수당·육아휴직 급여 등 수령 가능 혜택 금액 계산 |
+| **정책 리뷰** | 실수령자들의 리뷰·꿀팁 커뮤니티 |
+| **서류 준비 가이드** | 정책 신청에 필요한 서류 목록 원클릭 제공 |
+| **북마크** | 관심 정책 저장 및 관리 |
+| **체크리스트** | 임신·출산 전후 단계별 준비 목록 |
+| **AI 챗봇** | 정책 관련 질문에 AI 답변 |
+| **프로필 설정** | 거주지·소득·임신 여부·자녀 정보 관리 |
 
-### ② 정책 알림 서비스 (D-Day 알림)
-- **신청 기한 푸시**: 아동수당, 어린이집 입소 신청, 돌봄 서비스 신청 등 자칫 놓치기 쉬운 신청 시작일과 마감일을 푸시 알림으로 제공
-- **나이별 정책 변화**: 아이가 초등학교에 입학하거나 연령이 바뀔 때 새로 받을 수 있는 혜택을 미리 알림
+---
 
-### ③ '한눈에 보는' 정책 인포그래픽
-- 복잡한 법령을 쉽게: 긴 텍스트 대신 카드 뉴스나 인포그래픽으로 '누가, 언제, 얼마나' 받는지 핵심만 요약해 제공
+## 서비스 흐름
 
-### ④ 모의 계산기 & 자격 진단
-- **"나는 얼마 받을까?"**: 부모 급여, 아동 수당 등을 합산하여 매달 실제로 수령하게 될 금액을 미리 계산
-- **맞벌이/외벌이 시뮬레이션**: 부모 휴직 시 받을 수 있는 육아휴직 급여를 세후 금액으로 미리 계산
+```
+프로필 설정 (거주지·소득·임신 여부·자녀 정보)
+        ↓
+맞춤 정책 목록 (매칭 점수 순 정렬)
+  ├─ 중앙정부 정책
+  └─ 지자체 전용 정책
+        ↓
+정책 상세 보기
+  ├─ 자격 요건 확인
+  ├─ 혜택 금액 계산기
+  ├─ 필요 서류 목록
+  └─ 실수령자 리뷰·꿀팁
+        ↓
+북마크 저장 · 알림 설정
+        ↓
+체크리스트로 진행 상황 관리
+```
 
-### ⑤ 정책 리뷰 & 꿀팁 커뮤니티
-- 실제 부모들의 생생한 후기 공간
-- 정책 신청 시 필요한 추가 서류나 꿀팁 공유
-
-### ⑥ 원클릭 서류 준비 가이드
-- 정책 신청에 필요한 서류 리스트 제공
-- 모바일에서 바로 발급받을 수 있는 정부24 링크 연결
+---
 
 ## 기술 스택
 
-- **Frontend**: Next.js 16, React 19, TypeScript, Tailwind CSS
-- **Backend**: Next.js API Routes
-- **Database**: SQLite (Prisma ORM)
-- **State Management**: Zustand, React Query
-- **Icons**: React Icons
+[![Next.js](https://img.shields.io/badge/Next.js-16-black?logo=next.js&logoColor=white)](https://nextjs.org)
+[![React](https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=black)](https://react.dev)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org)
+[![Prisma](https://img.shields.io/badge/Prisma-6-2D3748?logo=prisma&logoColor=white)](https://www.prisma.io)
+[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-336791?logo=postgresql&logoColor=white)](https://www.postgresql.org)
 
-## 시작하기
+| 기술 | 버전 | 용도 |
+|------|------|------|
+| [Next.js](https://nextjs.org) | 16 | 풀스택 프레임워크 (App Router) |
+| [React](https://react.dev) | 19 | UI 라이브러리 |
+| [TypeScript](https://www.typescriptlang.org) | 5 | 타입 안전성 |
+| [Tailwind CSS](https://tailwindcss.com) | 4 | 스타일링 |
+| [Prisma](https://www.prisma.io) | 6 | ORM |
+| [PostgreSQL](https://www.postgresql.org) | - | 데이터베이스 |
+| [Zustand](https://zustand-demo.pmnd.rs) | 5 | 클라이언트 상태 관리 |
+| [TanStack Query](https://tanstack.com/query) | 5 | 서버 상태 관리 |
+| [React Hook Form](https://react-hook-form.com) | 7 | 폼 관리 |
+| [date-fns](https://date-fns.org) | 4 | 날짜 유틸리티 |
 
-### 필수 요구사항
-- Node.js 18 이상
-- npm 또는 yarn
-
-### 설치 및 실행
-
-```bash
-# 의존성 설치
-npm install
-
-# 데이터베이스 마이그레이션
-npx prisma migrate dev
-
-# 개발 서버 실행
-npm run dev
-```
-
-브라우저에서 [http://localhost:3000](http://localhost:3000)을 열어 확인하세요.
-
-### 환경변수 설정
-
-`.env.example` 파일을 참고하여 `.env` 파일을 생성하고 다음을 설정하세요:
-
-```bash
-# .env.example을 .env로 복사
-cp .env.example .env
-```
-
-`.env` 파일에 다음을 추가하세요:
-
-```
-DATABASE_URL="file:./prisma/dev.db"
-GEMINI_API_KEY="your-gemini-api-key-here"
-```
-
-**보안 주의사항:**
-- `.env` 파일은 절대 Git에 커밋하지 마세요
-- API 키는 서버 사이드에서만 사용하세요
-- 프로덕션 환경에서는 환경변수로 직접 설정하세요
+---
 
 ## 프로젝트 구조
 
 ```
 baby-policy-app/
-├── app/                    # Next.js App Router
-│   ├── api/               # API 라우트
-│   ├── profile/           # 프로필 설정 페이지
-│   ├── policies/          # 정책 목록 페이지
-│   ├── policy/[id]/       # 정책 상세 페이지
-│   ├── calculator/        # 계산기 페이지
-│   ├── notifications/     # 알림 페이지
-│   ├── reviews/           # 리뷰 커뮤니티 페이지
-│   └── documents/         # 서류 준비 가이드 페이지
-├── components/            # 재사용 가능한 컴포넌트
-├── lib/                   # 유틸리티 및 Prisma 클라이언트
-├── prisma/                # Prisma 스키마 및 마이그레이션
-└── public/                # 정적 파일
+│
+├── app/                               # Next.js App Router
+│   ├── api/                           # API 라우트
+│   │   ├── policies/route.ts          # 정책 목록 (매칭 점수 포함)
+│   │   ├── policy/[id]/route.ts       # 정책 상세
+│   │   ├── profile/route.ts           # 프로필 조회·저장
+│   │   ├── bookmarks/route.ts         # 북마크 목록
+│   │   ├── bookmark/route.ts          # 북마크 토글
+│   │   ├── chat/route.ts              # AI 챗봇
+│   │   ├── checklist/route.ts         # 체크리스트 CRUD
+│   │   └── checklist/init/route.ts    # 초기 체크리스트 생성
+│   ├── page.tsx                       # 홈 (대시보드)
+│   ├── profile/page.tsx               # 프로필 설정
+│   ├── policies/page.tsx              # 정책 목록
+│   ├── policy/[id]/page.tsx           # 정책 상세
+│   ├── calculator/page.tsx            # 혜택 계산기
+│   ├── notifications/page.tsx         # 알림 목록
+│   ├── reviews/page.tsx               # 리뷰 커뮤니티
+│   ├── documents/page.tsx             # 서류 준비 가이드
+│   ├── bookmarks/page.tsx             # 저장한 정책
+│   ├── checklist/page.tsx             # 체크리스트
+│   ├── layout.tsx                     # 루트 레이아웃
+│   └── providers.tsx                  # React Query·Zustand 프로바이더
+│
+├── components/                        # 재사용 UI 컴포넌트
+│   ├── Navbar.tsx                     # 하단 네비게이션
+│   └── Chatbot.tsx                    # AI 챗봇 위젯
+│
+├── lib/
+│   ├── prisma.ts                      # Prisma 클라이언트 싱글턴
+│   ├── utils.ts                       # 유틸리티 함수
+│   └── storage.ts                     # localStorage 관리
+│
+├── prisma/
+│   ├── schema.prisma                  # DB 스키마 정의
+│   ├── seed.ts                        # 초기 데이터 시드
+│   └── migrations/                    # 마이그레이션 이력
+│
+├── public/                            # 정적 파일
+├── package.json
+├── next.config.ts
+└── tailwind.config.ts
 ```
 
-## 주요 기능 상세
+---
 
-### 프로필 설정
-- 거주지 정보 (시/도, 구/군, 동)
-- 가구 정보 (소득 수준, 자녀 수, 맞벌이 여부)
-- 자녀 정보 (이름, 생년월일)
+## 시작하기 (로컬 개발)
 
-### 정책 매칭 알고리즘
-- 지역 조건 매칭
-- 자녀 수 및 나이 조건 매칭
-- 소득 수준 매칭
-- 맞벌이/다자녀 조건 매칭
-- 매칭 점수 계산 (0-100점)
+### 사전 요구사항
 
-### 계산기 기능
-- 월 혜택 계산 (아동수당 등)
-- 육아휴직 급여 계산
-- 연간 총 혜택 예상액 계산
+| 항목 | 버전 |
+|------|------|
+| Node.js | 18+ |
+| PostgreSQL | 14+ |
 
-## 향후 개발 계획
+### 1. 저장소 클론
 
-- [ ] 푸시 알림 구현 (FCM 또는 Web Push)
-- [ ] 전문가 법률/세무 상담 기능
-- [ ] 프리미엄 리포트 기능
-- [ ] 지자체 협업 모델
-- [ ] 실제 정책 데이터 연동
-- [ ] 사용자 인증 시스템
-- [ ] 모바일 앱 (React Native)
+```bash
+git clone <repository-url>
+cd baby-policy-app
+```
 
-## 라이선스
+### 2. 의존성 설치
 
-MIT
+```bash
+npm install
+```
+
+### 3. 환경변수 설정
+
+`.env` 파일을 생성합니다.
+
+```env
+DATABASE_URL="postgresql://USER:PASSWORD@localhost:5432/baby_policy?schema=public"
+```
+
+### 4. DB 마이그레이션
+
+```bash
+npx prisma migrate dev --name init
+npx prisma generate
+```
+
+### 5. (선택) 초기 샘플 데이터 삽입
+
+```bash
+npm run db:seed
+```
+
+### 6. 개발 서버 실행
+
+```bash
+npm run dev
+```
+
+- 서비스: http://localhost:3000
+
+---
+
+## DB 스키마
+
+| 모델 | 설명 |
+|------|------|
+| `User` | 사용자 계정 |
+| `UserProfile` | 거주지·소득·임신·맞벌이 정보 |
+| `Child` | 자녀 정보 (생년월일·나이) |
+| `Policy` | 정책 (카테고리·대상 조건·혜택·신청 정보) |
+| `UserPolicy` | 사용자-정책 매칭 (점수·북마크·신청 여부) |
+| `Notification` | 정책 신청 마감·시작 알림 |
+| `Review` | 정책 리뷰·꿀팁 |
+| `Calculation` | 계산기 결과 저장 |
+| `Checklist` | 임신·출산 체크리스트 항목 |
+
+---
+
+## API 엔드포인트
+
+| 메서드 | 경로 | 설명 |
+|--------|------|------|
+| GET | `/api/policies` | 정책 목록 (매칭 점수 포함) |
+| GET | `/api/policy/[id]` | 정책 상세 조회 |
+| GET/POST | `/api/profile` | 프로필 조회·저장 |
+| GET | `/api/bookmarks` | 북마크 목록 |
+| POST | `/api/bookmark` | 북마크 토글 |
+| POST | `/api/chat` | AI 챗봇 응답 |
+| GET/POST | `/api/checklist` | 체크리스트 CRUD |
+| GET | `/api/checklist/init` | 초기 체크리스트 생성 |

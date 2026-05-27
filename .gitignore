@@ -37,6 +37,11 @@ yarn-error.log*
 # database
 *.db
 *.db-journal
+*.sqlite
+
+# Python 가상환경
+venv/
+.venv/
 
 # vercel
 .vercel
