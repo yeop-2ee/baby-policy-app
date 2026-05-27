@@ -1,0 +1,1043 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>baby-policy-app — 화면 Flow Map</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: #ebebeb; font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', sans-serif; }
+
+    .canvas { padding: 60px; min-width: 2000px; }
+
+    .flowmap-title { margin-bottom: 52px; }
+    .flowmap-title h1 { font-size: 22px; font-weight: 800; color: #1a1a1a; margin-bottom: 6px; }
+    .flowmap-title p { font-size: 12px; color: #999; font-weight: 500; letter-spacing: 0.3px; }
+
+    .flow-row { display: flex; align-items: flex-start; margin-bottom: 72px; }
+    .row-label-col { width: 88px; padding-top: 46px; flex-shrink: 0; }
+    .row-label-col span { writing-mode: vertical-rl; font-size: 10px; font-weight: 700; color: #aaa; letter-spacing: 2px; text-transform: uppercase; }
+    .screens-row { display: flex; align-items: center; }
+
+    .artboard { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+    .artboard-name { font-size: 11px; font-weight: 700; color: #444; text-align: center; }
+    .artboard-route { font-size: 10px; color: #aaa; text-align: center; font-family: 'Menlo','Monaco',monospace; margin-top: 2px; }
+
+    /* Screen wrapper — 320×220 rendered at 960px scale(0.3333) */
+    .sw { width: 320px; height: 220px; overflow: hidden; border-radius: 10px; position: relative;
+          box-shadow: 0 8px 24px rgba(0,0,0,0.14), 0 2px 6px rgba(0,0,0,0.07); background: #f8f9fc; }
+    .si { width: 960px; transform: scale(0.3333); transform-origin: top left; position: absolute; top: 0; left: 0; }
+
+    .connector { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 0 10px; padding-top: 28px; gap: 4px; }
+    .connector-label { font-size: 9px; color: #ccc; white-space: nowrap; }
+  </style>
+</head>
+<body>
+<div class="canvas">
+
+  <div class="flowmap-title">
+    <h1>baby-policy-app — 화면 설계 Flow Map</h1>
+    <p>Next.js 15 · Tailwind CSS · Prisma · React Query · 육아 정책 정보 플랫폼</p>
+  </div>
+
+  <!-- ========================= ROW 1: 핵심 플로우 ========================= -->
+  <div class="flow-row">
+    <div class="row-label-col"><span>핵심 플로우</span></div>
+    <div class="screens-row">
+
+      <!-- ── Screen 1: 홈 ── -->
+      <div class="artboard">
+        <span class="artboard-name">홈</span>
+        <div class="sw">
+          <div class="si">
+            <div style="min-height:660px;background:#f9fafb;font-family:-apple-system,BlinkMacSystemFont,sans-serif;position:relative;padding-bottom:64px;">
+              <!-- Header -->
+              <div style="background:white;border-bottom:1px solid #e5e7eb;padding:0 24px;height:72px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:40;">
+                <div style="font-size:30px;font-weight:800;color:#111827;">육아 정조준</div>
+                <div style="display:flex;gap:12px;">
+                  <div style="width:40px;height:40px;background:#fef3c7;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:22px;">🔔</div>
+                  <div style="width:40px;height:40px;background:#eff6ff;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:22px;">👤</div>
+                </div>
+              </div>
+              <!-- D-Day urgent banner -->
+              <div style="background:linear-gradient(135deg,#ef4444,#f97316);margin:16px;border-radius:12px;padding:16px 20px;color:white;position:relative;overflow:hidden;">
+                <div style="font-size:13px;opacity:0.85;margin-bottom:4px;">⚡ 마감 임박</div>
+                <div style="font-size:20px;font-weight:700;">D-3 아동수당 신청</div>
+                <div style="font-size:13px;opacity:0.85;margin-top:2px;">신청 마감까지 3일 남았습니다</div>
+                <div style="position:absolute;right:20px;top:50%;transform:translateY(-50%);font-size:40px;opacity:0.25;">🔔</div>
+              </div>
+              <!-- 2x2 grid -->
+              <div style="padding:0 16px;display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;">
+                <div style="background:#dbeafe;border-radius:12px;padding:16px;display:flex;flex-direction:column;gap:8px;">
+                  <div style="width:40px;height:40px;background:#2563eb;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:22px;color:white;">📋</div>
+                  <div style="font-size:17px;font-weight:700;color:#1e3a8a;">정책 찾기</div>
+                  <div style="font-size:13px;color:#3b82f6;">맞춤 정책 추천</div>
+                </div>
+                <div style="background:#dcfce7;border-radius:12px;padding:16px;display:flex;flex-direction:column;gap:8px;">
+                  <div style="width:40px;height:40px;background:#16a34a;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:22px;color:white;">💰</div>
+                  <div style="font-size:17px;font-weight:700;color:#14532d;">혜택 계산</div>
+                  <div style="font-size:13px;color:#22c55e;">받을 수 있는 금액</div>
+                </div>
+                <div style="background:#ffedd5;border-radius:12px;padding:16px;display:flex;flex-direction:column;gap:8px;">
+                  <div style="width:40px;height:40px;background:#ea580c;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:22px;color:white;">⏰</div>
+                  <div style="font-size:17px;font-weight:700;color:#7c2d12;">D-Day 알림</div>
+                  <div style="font-size:13px;color:#f97316;">신청 기한 관리</div>
+                </div>
+                <div style="background:#f3e8ff;border-radius:12px;padding:16px;display:flex;flex-direction:column;gap:8px;">
+                  <div style="width:40px;height:40px;background:#9333ea;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:22px;color:white;">💬</div>
+                  <div style="font-size:17px;font-weight:700;color:#581c87;">커뮤니티</div>
+                  <div style="font-size:13px;color:#a855f7;">리뷰 & 꿀팁</div>
+                </div>
+              </div>
+              <!-- Documents guide card -->
+              <div style="margin:0 16px 12px;background:#e0e7ff;border-radius:12px;padding:14px 18px;display:flex;align-items:center;gap:14px;">
+                <div style="width:40px;height:40px;background:#4f46e5;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:22px;color:white;">📄</div>
+                <div>
+                  <div style="font-size:17px;font-weight:700;color:#1e1b4b;">서류 준비 가이드</div>
+                  <div style="font-size:13px;color:#6366f1;">필요 서류를 한눈에 확인하세요</div>
+                </div>
+                <div style="margin-left:auto;color:#4f46e5;font-size:22px;">›</div>
+              </div>
+              <!-- Recommended policies -->
+              <div style="padding:0 16px;">
+                <div style="font-size:18px;font-weight:700;color:#111827;margin-bottom:10px;">추천 정책</div>
+                <div style="background:white;border-radius:10px;padding:14px 16px;border:1px solid #e5e7eb;margin-bottom:8px;display:flex;justify-content:space-between;align-items:start;">
+                  <div>
+                    <div style="font-size:16px;font-weight:600;color:#111827;margin-bottom:4px;">아동수당</div>
+                    <div style="font-size:13px;color:#6b7280;">만 8세 미만 아동 대상 매월 지급</div>
+                  </div>
+                  <span style="font-size:11px;background:#dbeafe;color:#1d4ed8;padding:3px 8px;border-radius:6px;">D-3</span>
+                </div>
+                <div style="background:white;border-radius:10px;padding:14px 16px;border:1px solid #e5e7eb;display:flex;justify-content:space-between;align-items:start;">
+                  <div>
+                    <div style="font-size:16px;font-weight:600;color:#111827;margin-bottom:4px;">출산 축하금</div>
+                    <div style="font-size:13px;color:#6b7280;">출생 신고 후 지원금 지급</div>
+                  </div>
+                  <span style="font-size:11px;background:#dcfce7;color:#15803d;padding:3px 8px;border-radius:6px;">상시</span>
+                </div>
+              </div>
+              <!-- Bottom nav -->
+              <div style="position:absolute;bottom:0;left:0;right:0;background:white;border-top:1px solid #e5e7eb;height:64px;display:flex;align-items:center;justify-content:space-around;padding:0 8px;">
+                <div style="display:flex;flex-direction:column;align-items:center;gap:4px;flex:1;color:#2563eb;"><div style="font-size:28px;">🏠</div><div style="font-size:16px;font-weight:500;">홈</div></div>
+                <div style="display:flex;flex-direction:column;align-items:center;gap:4px;flex:1;color:#6b7280;"><div style="font-size:28px;">📋</div><div style="font-size:16px;">정책</div></div>
+                <div style="display:flex;flex-direction:column;align-items:center;gap:4px;flex:1;color:#6b7280;"><div style="font-size:28px;">🔖</div><div style="font-size:16px;">즐겨찾기</div></div>
+                <div style="display:flex;flex-direction:column;align-items:center;gap:4px;flex:1;color:#6b7280;"><div style="font-size:28px;">✅</div><div style="font-size:16px;">체크</div></div>
+                <div style="display:flex;flex-direction:column;align-items:center;gap:4px;flex:1;color:#6b7280;"><div style="font-size:28px;">👤</div><div style="font-size:16px;">프로필</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <span class="artboard-route">/</span>
+      </div>
+
+      <div class="connector">
+        <svg width="42" height="18" viewBox="0 0 42 18" fill="none"><line x1="0" y1="9" x2="32" y2="9" stroke="#bbb" stroke-width="1.5"/><polyline points="26,4 34,9 26,14" stroke="#bbb" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span class="connector-label">정책찾기 클릭</span>
+      </div>
+
+      <!-- ── Screen 2: 정책 찾기 ── -->
+      <div class="artboard">
+        <span class="artboard-name">정책 찾기</span>
+        <div class="sw">
+          <div class="si">
+            <div style="min-height:660px;background:#f9fafb;font-family:-apple-system,BlinkMacSystemFont,sans-serif;position:relative;padding-bottom:64px;">
+              <!-- Header -->
+              <div style="background:white;border-bottom:1px solid #e5e7eb;padding:0 24px;height:72px;display:flex;align-items:center;gap:16px;position:sticky;top:0;z-index:40;">
+                <div style="font-size:28px;color:#4b5563;">‹</div>
+                <div style="flex:1;background:#f3f4f6;border-radius:10px;padding:10px 16px;display:flex;align-items:center;gap:10px;border:1.5px solid #d1d5db;">
+                  <div style="color:#9ca3af;font-size:22px;">🔍</div>
+                  <div style="color:#9ca3af;font-size:20px;">정책을 검색하세요</div>
+                </div>
+              </div>
+              <!-- Location filter -->
+              <div style="background:white;padding:14px 24px;display:flex;align-items:center;gap:10px;border-bottom:1px solid #e5e7eb;">
+                <div style="width:22px;height:22px;border-radius:4px;background:#2563eb;display:flex;align-items:center;justify-content:center;color:white;font-size:14px;">✓</div>
+                <div style="font-size:18px;color:#111827;">내 지역 정책만 보기</div>
+              </div>
+              <!-- Category pills -->
+              <div style="background:white;padding:14px 24px;display:flex;gap:10px;border-bottom:1px solid #e5e7eb;">
+                <span style="background:#2563eb;color:white;padding:8px 18px;border-radius:20px;font-size:16px;font-weight:600;white-space:nowrap;">전체</span>
+                <span style="background:#f3f4f6;color:#374151;padding:8px 18px;border-radius:20px;font-size:16px;white-space:nowrap;">출산</span>
+                <span style="background:#f3f4f6;color:#374151;padding:8px 18px;border-radius:20px;font-size:16px;white-space:nowrap;">육아</span>
+                <span style="background:#f3f4f6;color:#374151;padding:8px 18px;border-radius:20px;font-size:16px;white-space:nowrap;">교육</span>
+                <span style="background:#f3f4f6;color:#374151;padding:8px 18px;border-radius:20px;font-size:16px;white-space:nowrap;">돌봄</span>
+                <span style="background:#f3f4f6;color:#374151;padding:8px 18px;border-radius:20px;font-size:16px;white-space:nowrap;">주거</span>
+              </div>
+              <!-- Policy list -->
+              <div style="padding:16px 24px;display:flex;flex-direction:column;gap:12px;">
+                <div style="background:white;border-radius:12px;padding:20px;border:1px solid #e5e7eb;">
+                  <div style="display:flex;justify-content:space-between;align-items:start;margin-bottom:8px;">
+                    <div style="display:flex;gap:8px;">
+                      <span style="font-size:14px;background:#dbeafe;color:#1d4ed8;padding:4px 10px;border-radius:6px;">중앙정부</span>
+                      <span style="font-size:14px;background:#f3f4f6;color:#374151;padding:4px 10px;border-radius:6px;">육아</span>
+                    </div>
+                    <div style="display:flex;align-items:center;gap:6px;">
+                      <span style="font-size:13px;background:#fee2e2;color:#dc2626;padding:4px 10px;border-radius:8px;font-weight:600;">D-3</span>
+                      <div style="font-size:24px;color:#eab308;">🔖</div>
+                    </div>
+                  </div>
+                  <div style="font-size:22px;font-weight:700;color:#111827;margin-bottom:6px;">아동수당</div>
+                  <div style="font-size:16px;color:#6b7280;line-height:1.5;">만 8세 미만 아동을 양육하는 가정에 월 10만원 지원</div>
+                </div>
+                <div style="background:white;border-radius:12px;padding:20px;border:1px solid #e5e7eb;">
+                  <div style="display:flex;justify-content:space-between;align-items:start;margin-bottom:8px;">
+                    <div style="display:flex;gap:8px;">
+                      <span style="font-size:14px;background:#f3e8ff;color:#7e22ce;padding:4px 10px;border-radius:6px;">지자체</span>
+                      <span style="font-size:14px;background:#f3f4f6;color:#374151;padding:4px 10px;border-radius:6px;">출산</span>
+                    </div>
+                    <div style="display:flex;align-items:center;gap:6px;">
+                      <span style="font-size:13px;background:#dcfce7;color:#15803d;padding:4px 10px;border-radius:8px;font-weight:600;">상시</span>
+                      <div style="font-size:24px;color:#d1d5db;">🔖</div>
+                    </div>
+                  </div>
+                  <div style="font-size:22px;font-weight:700;color:#111827;margin-bottom:6px;">출산 축하금</div>
+                  <div style="font-size:16px;color:#6b7280;line-height:1.5;">출생 신고 후 지자체별 차등 지급</div>
+                </div>
+                <div style="background:white;border-radius:12px;padding:20px;border:1px solid #e5e7eb;">
+                  <div style="display:flex;justify-content:space-between;align-items:start;margin-bottom:8px;">
+                    <div style="display:flex;gap:8px;">
+                      <span style="font-size:14px;background:#dbeafe;color:#1d4ed8;padding:4px 10px;border-radius:6px;">중앙정부</span>
+                      <span style="font-size:14px;background:#f3f4f6;color:#374151;padding:4px 10px;border-radius:6px;">육아</span>
+                    </div>
+                    <div style="display:flex;align-items:center;gap:6px;">
+                      <span style="font-size:13px;background:#fef3c7;color:#b45309;padding:4px 10px;border-radius:8px;font-weight:600;">D-14</span>
+                      <div style="font-size:24px;color:#d1d5db;">🔖</div>
+                    </div>
+                  </div>
+                  <div style="font-size:22px;font-weight:700;color:#111827;margin-bottom:6px;">육아휴직 급여</div>
+                  <div style="font-size:16px;color:#6b7280;line-height:1.5;">육아휴직 기간 동안 통상임금의 80% 지급</div>
+                </div>
+              </div>
+              <!-- Bottom nav -->
+              <div style="position:absolute;bottom:0;left:0;right:0;background:white;border-top:1px solid #e5e7eb;height:64px;display:flex;align-items:center;justify-content:space-around;padding:0 8px;">
+                <div style="display:flex;flex-direction:column;align-items:center;gap:4px;flex:1;color:#6b7280;"><div style="font-size:28px;">🏠</div><div style="font-size:16px;">홈</div></div>
+                <div style="display:flex;flex-direction:column;align-items:center;gap:4px;flex:1;color:#2563eb;"><div style="font-size:28px;">📋</div><div style="font-size:16px;font-weight:500;">정책</div></div>
+                <div style="display:flex;flex-direction:column;align-items:center;gap:4px;flex:1;color:#6b7280;"><div style="font-size:28px;">🔖</div><div style="font-size:16px;">즐겨찾기</div></div>
+                <div style="display:flex;flex-direction:column;align-items:center;gap:4px;flex:1;color:#6b7280;"><div style="font-size:28px;">✅</div><div style="font-size:16px;">체크</div></div>
+                <div style="display:flex;flex-direction:column;align-items:center;gap:4px;flex:1;color:#6b7280;"><div style="font-size:28px;">👤</div><div style="font-size:16px;">프로필</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <span class="artboard-route">/policies</span>
+      </div>
+
+      <div class="connector">
+        <svg width="42" height="18" viewBox="0 0 42 18" fill="none"><line x1="0" y1="9" x2="32" y2="9" stroke="#bbb" stroke-width="1.5"/><polyline points="26,4 34,9 26,14" stroke="#bbb" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span class="connector-label">카드 클릭</span>
+      </div>
+
+      <!-- ── Screen 3: 정책 상세 ── -->
+      <div class="artboard">
+        <span class="artboard-name">정책 상세</span>
+        <div class="sw">
+          <div class="si">
+            <div style="min-height:660px;background:#f9fafb;font-family:-apple-system,BlinkMacSystemFont,sans-serif;position:relative;padding-bottom:64px;">
+              <!-- Header -->
+              <div style="background:white;border-bottom:1px solid #e5e7eb;padding:0 24px;height:72px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:40;">
+                <div style="display:flex;align-items:center;gap:14px;">
+                  <div style="font-size:28px;color:#4b5563;">‹</div>
+                  <div style="font-size:26px;font-weight:700;color:#111827;">정책 상세</div>
+                </div>
+                <div style="font-size:28px;color:#eab308;">🔖</div>
+              </div>
+              <div style="padding:16px 24px;display:flex;flex-direction:column;gap:14px;">
+                <!-- Policy header card -->
+                <div style="background:white;border-radius:14px;padding:22px;box-shadow:0 1px 4px rgba(0,0,0,0.07);">
+                  <div style="display:flex;gap:8px;margin-bottom:12px;">
+                    <span style="font-size:14px;background:#dbeafe;color:#1d4ed8;padding:4px 12px;border-radius:6px;">중앙정부</span>
+                    <span style="font-size:14px;background:#f3f4f6;color:#374151;padding:4px 12px;border-radius:6px;">육아</span>
+                  </div>
+                  <div style="font-size:30px;font-weight:800;color:#111827;margin-bottom:8px;">아동수당</div>
+                  <div style="font-size:17px;color:#6b7280;line-height:1.5;margin-bottom:14px;">만 8세 미만 아동을 양육하는 가정에 매월 지급하는 보편적 수당입니다.</div>
+                  <div style="background:#fff7ed;border:1.5px solid #fed7aa;border-radius:10px;padding:12px 16px;display:flex;align-items:center;gap:10px;">
+                    <div style="font-size:22px;">📅</div>
+                    <div style="font-size:18px;font-weight:700;color:#c2410c;">신청 마감까지 D-3</div>
+                  </div>
+                </div>
+                <!-- 혜택 정보 -->
+                <div style="background:white;border-radius:14px;padding:22px;box-shadow:0 1px 4px rgba(0,0,0,0.07);">
+                  <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;">
+                    <div style="font-size:24px;color:#16a34a;">💰</div>
+                    <div style="font-size:22px;font-weight:700;color:#111827;">혜택 정보</div>
+                  </div>
+                  <div style="font-size:14px;color:#6b7280;margin-bottom:4px;">혜택 금액</div>
+                  <div style="font-size:34px;font-weight:800;color:#16a34a;margin-bottom:10px;">월 100,000원</div>
+                  <div style="font-size:14px;color:#6b7280;margin-bottom:4px;">혜택 유형</div>
+                  <div style="font-size:18px;font-weight:600;color:#111827;">현금 지급</div>
+                </div>
+                <!-- 대상 조건 -->
+                <div style="background:white;border-radius:14px;padding:22px;box-shadow:0 1px 4px rgba(0,0,0,0.07);">
+                  <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;">
+                    <div style="font-size:24px;color:#2563eb;">👨‍👩‍👧</div>
+                    <div style="font-size:22px;font-weight:700;color:#111827;">대상 조건</div>
+                  </div>
+                  <div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid #f3f4f6;">
+                    <span style="font-size:17px;color:#6b7280;">자녀 나이</span>
+                    <span style="font-size:17px;font-weight:600;color:#111827;">0세 ~ 8세</span>
+                  </div>
+                  <div style="display:flex;justify-content:space-between;padding:10px 0;">
+                    <span style="font-size:17px;color:#6b7280;">대상 지역</span>
+                    <span style="font-size:17px;font-weight:600;color:#111827;">전국</span>
+                  </div>
+                </div>
+                <!-- 필요 서류 -->
+                <div style="background:white;border-radius:14px;padding:22px;box-shadow:0 1px 4px rgba(0,0,0,0.07);">
+                  <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;">
+                    <div style="font-size:24px;color:#9333ea;">📄</div>
+                    <div style="font-size:22px;font-weight:700;color:#111827;">필요 서류</div>
+                  </div>
+                  <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;"><div style="width:10px;height:10px;background:#9333ea;border-radius:50%;"></div><span style="font-size:17px;color:#374151;">주민등록등본</span></div>
+                  <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;"><div style="width:10px;height:10px;background:#9333ea;border-radius:50%;"></div><span style="font-size:17px;color:#374151;">가족관계증명서</span></div>
+                  <div style="background:#eff6ff;border-radius:8px;padding:12px 14px;">
+                    <div style="font-size:15px;color:#1d4ed8;">💡 정부24에서 온라인으로 발급받을 수 있습니다</div>
+                    <div style="font-size:14px;color:#2563eb;margin-top:4px;">정부24 바로가기 →</div>
+                  </div>
+                </div>
+                <!-- 신청하기 버튼 -->
+                <div style="background:#2563eb;border-radius:12px;padding:18px;text-align:center;color:white;font-size:22px;font-weight:700;">🔗 신청하기</div>
+              </div>
+              <!-- Bottom nav -->
+              <div style="position:absolute;bottom:0;left:0;right:0;background:white;border-top:1px solid #e5e7eb;height:64px;display:flex;align-items:center;justify-content:space-around;padding:0 8px;">
+                <div style="display:flex;flex-direction:column;align-items:center;gap:4px;flex:1;color:#6b7280;"><div style="font-size:28px;">🏠</div><div style="font-size:16px;">홈</div></div>
+                <div style="display:flex;flex-direction:column;align-items:center;gap:4px;flex:1;color:#2563eb;"><div style="font-size:28px;">📋</div><div style="font-size:16px;font-weight:500;">정책</div></div>
+                <div style="display:flex;flex-direction:column;align-items:center;gap:4px;flex:1;color:#6b7280;"><div style="font-size:28px;">🔖</div><div style="font-size:16px;">즐겨찾기</div></div>
+                <div style="display:flex;flex-direction:column;align-items:center;gap:4px;flex:1;color:#6b7280;"><div style="font-size:28px;">✅</div><div style="font-size:16px;">체크</div></div>
+                <div style="display:flex;flex-direction:column;align-items:center;gap:4px;flex:1;color:#6b7280;"><div style="font-size:28px;">👤</div><div style="font-size:16px;">프로필</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <span class="artboard-route">/policy/[id]</span>
+      </div>
+
+      <div class="connector">
+        <svg width="42" height="18" viewBox="0 0 42 18" fill="none"><line x1="0" y1="9" x2="32" y2="9" stroke="#bbb" stroke-width="1.5"/><polyline points="26,4 34,9 26,14" stroke="#bbb" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span class="connector-label">서류 가이드</span>
+      </div>
+
+      <!-- ── Screen 4: 서류 준비 ── -->
+      <div class="artboard">
+        <span class="artboard-name">서류 준비 가이드</span>
+        <div class="sw">
+          <div class="si">
+            <div style="min-height:660px;background:#f9fafb;font-family:-apple-system,BlinkMacSystemFont,sans-serif;position:relative;padding-bottom:64px;">
+              <!-- Header -->
+              <div style="background:white;border-bottom:1px solid #e5e7eb;padding:0 24px;height:72px;display:flex;align-items:center;gap:16px;position:sticky;top:0;z-index:40;">
+                <div style="font-size:28px;color:#4b5563;">‹</div>
+                <div style="font-size:26px;font-weight:700;color:#111827;">서류 준비 가이드</div>
+              </div>
+              <div style="padding:16px 24px;display:flex;flex-direction:column;gap:14px;">
+                <!-- Info banner — gov24 tip (실제 소스 반영) -->
+                <div style="background:#eff6ff;border-left:5px solid #3b82f6;border-radius:0 10px 10px 0;padding:16px 20px;">
+                  <div style="font-size:16px;color:#1e40af;line-height:1.5;">💡 정부24에서 대부분의 서류를 온라인으로 발급받을 수 있습니다. 모바일에서도 간편하게 발급 가능합니다.</div>
+                </div>
+                <!-- Document card 1: 주민등록등본 -->
+                <div style="background:white;border-radius:14px;padding:20px;box-shadow:0 1px 4px rgba(0,0,0,0.07);">
+                  <div style="font-size:21px;font-weight:700;color:#111827;margin-bottom:6px;">주민등록등본</div>
+                  <div style="font-size:15px;color:#6b7280;margin-bottom:10px;">가족 구성원 확인용</div>
+                  <div style="font-size:13px;color:#9ca3af;margin-bottom:6px;">필요한 정책:</div>
+                  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px;">
+                    <span style="font-size:13px;background:#f3f4f6;color:#374151;padding:3px 10px;border-radius:4px;">아동수당</span>
+                    <span style="font-size:13px;background:#f3f4f6;color:#374151;padding:3px 10px;border-radius:4px;">출산 축하금</span>
+                  </div>
+                  <div style="display:flex;align-items:center;gap:6px;color:#2563eb;font-size:16px;font-weight:600;">
+                    <span>🔗</span><span>정부24에서 발급받기</span>
+                  </div>
+                </div>
+                <!-- Document card 2: 가족관계증명서 -->
+                <div style="background:white;border-radius:14px;padding:20px;box-shadow:0 1px 4px rgba(0,0,0,0.07);">
+                  <div style="font-size:21px;font-weight:700;color:#111827;margin-bottom:6px;">가족관계증명서</div>
+                  <div style="font-size:15px;color:#6b7280;margin-bottom:10px;">가족 관계 확인용</div>
+                  <div style="font-size:13px;color:#9ca3af;margin-bottom:6px;">필요한 정책:</div>
+                  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px;">
+                    <span style="font-size:13px;background:#f3f4f6;color:#374151;padding:3px 10px;border-radius:4px;">아동수당</span>
+                    <span style="font-size:13px;background:#f3f4f6;color:#374151;padding:3px 10px;border-radius:4px;">육아휴직 급여</span>
+                  </div>
+                  <div style="display:flex;align-items:center;gap:6px;color:#2563eb;font-size:16px;font-weight:600;">
+                    <span>🔗</span><span>정부24에서 발급받기</span>
+                  </div>
+                </div>
+                <!-- Document card 3: 소득증명원 -->
+                <div style="background:white;border-radius:14px;padding:20px;box-shadow:0 1px 4px rgba(0,0,0,0.07);">
+                  <div style="font-size:21px;font-weight:700;color:#111827;margin-bottom:6px;">소득증명원</div>
+                  <div style="font-size:15px;color:#6b7280;margin-bottom:10px;">소득 수준 확인용</div>
+                  <div style="font-size:13px;color:#9ca3af;margin-bottom:6px;">필요한 정책:</div>
+                  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px;">
+                    <span style="font-size:13px;background:#f3f4f6;color:#374151;padding:3px 10px;border-radius:4px;">소득 기반 정책</span>
+                  </div>
+                  <div style="display:flex;align-items:center;gap:6px;color:#2563eb;font-size:16px;font-weight:600;">
+                    <span>🔗</span><span>정부24에서 발급받기</span>
+                  </div>
+                </div>
+                <!-- Document card 4: 출생증명서 -->
+                <div style="background:white;border-radius:14px;padding:20px;box-shadow:0 1px 4px rgba(0,0,0,0.07);">
+                  <div style="font-size:21px;font-weight:700;color:#111827;margin-bottom:6px;">출생증명서</div>
+                  <div style="font-size:15px;color:#6b7280;margin-bottom:10px;">자녀 출생 확인용</div>
+                  <div style="font-size:13px;color:#9ca3af;margin-bottom:6px;">필요한 정책:</div>
+                  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px;">
+                    <span style="font-size:13px;background:#f3f4f6;color:#374151;padding:3px 10px;border-radius:4px;">출산 축하금</span>
+                  </div>
+                  <div style="display:flex;align-items:center;gap:6px;color:#2563eb;font-size:16px;font-weight:600;">
+                    <span>🔗</span><span>정부24에서 발급받기</span>
+                  </div>
+                </div>
+                <!-- 서류 준비 체크리스트 섹션 -->
+                <div style="background:white;border-radius:14px;padding:20px;box-shadow:0 1px 4px rgba(0,0,0,0.07);">
+                  <div style="font-size:20px;font-weight:700;color:#111827;margin-bottom:14px;">서류 준비 체크리스트</div>
+                  <div style="display:flex;flex-direction:column;gap:10px;">
+                    <label style="display:flex;align-items:center;gap:12px;padding:12px 14px;border:1px solid #e5e7eb;border-radius:10px;">
+                      <div style="width:22px;height:22px;border:2px solid #d1d5db;border-radius:4px;flex-shrink:0;"></div>
+                      <div>
+                        <div style="font-size:16px;font-weight:500;color:#111827;">주민등록등본</div>
+                        <div style="font-size:13px;color:#9ca3af;">가족 구성원 확인용</div>
+                      </div>
+                      <div style="margin-left:auto;font-size:20px;color:#d1d5db;">✓</div>
+                    </label>
+                    <label style="display:flex;align-items:center;gap:12px;padding:12px 14px;border:1px solid #e5e7eb;border-radius:10px;">
+                      <div style="width:22px;height:22px;border:2px solid #d1d5db;border-radius:4px;flex-shrink:0;"></div>
+                      <div>
+                        <div style="font-size:16px;font-weight:500;color:#111827;">가족관계증명서</div>
+                        <div style="font-size:13px;color:#9ca3af;">가족 관계 확인용</div>
+                      </div>
+                      <div style="margin-left:auto;font-size:20px;color:#d1d5db;">✓</div>
+                    </label>
+                    <label style="display:flex;align-items:center;gap:12px;padding:12px 14px;border:1px solid #e5e7eb;border-radius:10px;">
+                      <div style="width:22px;height:22px;border:2px solid #d1d5db;border-radius:4px;flex-shrink:0;"></div>
+                      <div>
+                        <div style="font-size:16px;font-weight:500;color:#111827;">소득증명원</div>
+                        <div style="font-size:13px;color:#9ca3af;">소득 수준 확인용</div>
+                      </div>
+                      <div style="margin-left:auto;font-size:20px;color:#d1d5db;">✓</div>
+                    </label>
+                    <label style="display:flex;align-items:center;gap:12px;padding:12px 14px;border:1px solid #e5e7eb;border-radius:10px;">
+                      <div style="width:22px;height:22px;border:2px solid #d1d5db;border-radius:4px;flex-shrink:0;"></div>
+                      <div>
+                        <div style="font-size:16px;font-weight:500;color:#111827;">출생증명서</div>
+                        <div style="font-size:13px;color:#9ca3af;">자녀 출생 확인용</div>
+                      </div>
+                      <div style="margin-left:auto;font-size:20px;color:#d1d5db;">✓</div>
+                    </label>
+                  </div>
+                </div>
+              </div>
+              <!-- Bottom nav -->
+              <div style="position:absolute;bottom:0;left:0;right:0;background:white;border-top:1px solid #e5e7eb;height:64px;display:flex;align-items:center;justify-content:space-around;padding:0 8px;">
+                <div style="display:flex;flex-direction:column;align-items:center;gap:4px;flex:1;color:#6b7280;"><div style="font-size:28px;">🏠</div><div style="font-size:16px;">홈</div></div>
+                <div style="display:flex;flex-direction:column;align-items:center;gap:4px;flex:1;color:#2563eb;"><div style="font-size:28px;">📋</div><div style="font-size:16px;font-weight:500;">정책</div></div>
+                <div style="display:flex;flex-direction:column;align-items:center;gap:4px;flex:1;color:#6b7280;"><div style="font-size:28px;">🔖</div><div style="font-size:16px;">즐겨찾기</div></div>
+                <div style="display:flex;flex-direction:column;align-items:center;gap:4px;flex:1;color:#6b7280;"><div style="font-size:28px;">✅</div><div style="font-size:16px;">체크</div></div>
+                <div style="display:flex;flex-direction:column;align-items:center;gap:4px;flex:1;color:#6b7280;"><div style="font-size:28px;">👤</div><div style="font-size:16px;">프로필</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <span class="artboard-route">/documents</span>
+      </div>
+
+    </div>
+  </div><!-- end row 1 -->
+
+
+  <!-- ========================= ROW 2: 개인화 플로우 ========================= -->
+  <div class="flow-row">
+    <div class="row-label-col"><span>개인화 플로우</span></div>
+    <div class="screens-row">
+
+      <!-- ── Screen 5: 프로필 설정 ── -->
+      <div class="artboard">
+        <span class="artboard-name">프로필 설정</span>
+        <div class="sw">
+          <div class="si">
+            <div style="min-height:660px;background:#f9fafb;font-family:-apple-system,BlinkMacSystemFont,sans-serif;position:relative;padding-bottom:64px;">
+              <!-- Header -->
+              <div style="background:white;border-bottom:1px solid #e5e7eb;padding:0 24px;height:72px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:40;">
+                <div style="font-size:28px;color:#4b5563;">‹</div>
+                <div style="font-size:26px;font-weight:700;color:#111827;">프로필 설정</div>
+                <div style="width:28px;"></div>
+              </div>
+              <div style="padding:16px 24px;display:flex;flex-direction:column;gap:16px;">
+                <!-- 거주지 정보 -->
+                <div style="background:white;border-radius:14px;padding:22px;box-shadow:0 1px 4px rgba(0,0,0,0.07);">
+                  <div style="font-size:20px;font-weight:700;color:#111827;margin-bottom:16px;">📍 거주지 정보</div>
+                  <div style="margin-bottom:12px;">
+                    <div style="font-size:15px;color:#6b7280;margin-bottom:6px;">시/도</div>
+                    <div style="border:1.5px solid #d1d5db;border-radius:8px;padding:12px 16px;font-size:18px;color:#111827;background:white;">서울특별시 ▾</div>
+                  </div>
+                  <div style="margin-bottom:12px;">
+                    <div style="font-size:15px;color:#6b7280;margin-bottom:6px;">구/군</div>
+                    <div style="border:1.5px solid #d1d5db;border-radius:8px;padding:12px 16px;font-size:18px;color:#111827;background:white;">강남구 ▾</div>
+                  </div>
+                  <div>
+                    <div style="font-size:15px;color:#6b7280;margin-bottom:6px;">동/읍/면</div>
+                    <div style="border:1.5px solid #2563eb;border-radius:8px;padding:12px 16px;font-size:18px;color:#111827;background:white;box-shadow:0 0 0 3px #bfdbfe;">역삼동</div>
+                  </div>
+                </div>
+                <!-- 출산 상태 -->
+                <div style="background:white;border-radius:14px;padding:22px;box-shadow:0 1px 4px rgba(0,0,0,0.07);">
+                  <div style="font-size:20px;font-weight:700;color:#111827;margin-bottom:16px;">🍼 출산 상태</div>
+                  <div style="display:flex;gap:24px;">
+                    <div style="display:flex;align-items:center;gap:8px;">
+                      <div style="width:22px;height:22px;border-radius:50%;border:2px solid #2563eb;background:#2563eb;display:flex;align-items:center;justify-content:center;"><div style="width:8px;height:8px;background:white;border-radius:50%;"></div></div>
+                      <span style="font-size:18px;color:#111827;">출산 후</span>
+                    </div>
+                    <div style="display:flex;align-items:center;gap:8px;">
+                      <div style="width:22px;height:22px;border-radius:50%;border:2px solid #d1d5db;background:white;"></div>
+                      <span style="font-size:18px;color:#6b7280;">출산 전</span>
+                    </div>
+                  </div>
+                </div>
+                <!-- 가구 정보 -->
+                <div style="background:white;border-radius:14px;padding:22px;box-shadow:0 1px 4px rgba(0,0,0,0.07);">
+                  <div style="font-size:20px;font-weight:700;color:#111827;margin-bottom:16px;">🏠 가구 정보</div>
+                  <div style="margin-bottom:12px;">
+                    <div style="font-size:15px;color:#6b7280;margin-bottom:6px;">소득 수준</div>
+                    <div style="border:1.5px solid #d1d5db;border-radius:8px;padding:12px 16px;font-size:18px;color:#111827;">중위소득 150% 이하 ▾</div>
+                  </div>
+                  <div style="margin-bottom:12px;">
+                    <div style="font-size:15px;color:#6b7280;margin-bottom:6px;">자녀 수</div>
+                    <div style="display:flex;align-items:center;gap:16px;">
+                      <div style="width:44px;height:44px;border-radius:8px;border:1.5px solid #d1d5db;display:flex;align-items:center;justify-content:center;font-size:26px;color:#6b7280;">−</div>
+                      <div style="font-size:28px;font-weight:700;color:#111827;">2</div>
+                      <div style="width:44px;height:44px;border-radius:8px;border:1.5px solid #d1d5db;display:flex;align-items:center;justify-content:center;font-size:26px;color:#6b7280;">+</div>
+                    </div>
+                  </div>
+                  <div style="display:flex;align-items:center;gap:10px;">
+                    <div style="width:22px;height:22px;border-radius:4px;background:#2563eb;display:flex;align-items:center;justify-content:center;color:white;font-size:14px;">✓</div>
+                    <span style="font-size:18px;color:#111827;">맞벌이 가구</span>
+                  </div>
+                </div>
+                <!-- Buttons -->
+                <div style="background:#2563eb;border-radius:12px;padding:18px;text-align:center;color:white;font-size:20px;font-weight:700;">프로필 저장하기</div>
+                <div style="background:white;border:1.5px solid #ef4444;border-radius:12px;padding:16px;text-align:center;color:#ef4444;font-size:18px;font-weight:600;">프로필 초기화</div>
+              </div>
+              <!-- Bottom nav -->
+              <div style="position:absolute;bottom:0;left:0;right:0;background:white;border-top:1px solid #e5e7eb;height:64px;display:flex;align-items:center;justify-content:space-around;padding:0 8px;">
+                <div style="display:flex;flex-direction:column;align-items:center;gap:4px;flex:1;color:#6b7280;"><div style="font-size:28px;">🏠</div><div style="font-size:16px;">홈</div></div>
+                <div style="display:flex;flex-direction:column;align-items:center;gap:4px;flex:1;color:#6b7280;"><div style="font-size:28px;">📋</div><div style="font-size:16px;">정책</div></div>
+                <div style="display:flex;flex-direction:column;align-items:center;gap:4px;flex:1;color:#6b7280;"><div style="font-size:28px;">🔖</div><div style="font-size:16px;">즐겨찾기</div></div>
+                <div style="display:flex;flex-direction:column;align-items:center;gap:4px;flex:1;color:#6b7280;"><div style="font-size:28px;">✅</div><div style="font-size:16px;">체크</div></div>
+                <div style="display:flex;flex-direction:column;align-items:center;gap:4px;flex:1;color:#2563eb;"><div style="font-size:28px;">👤</div><div style="font-size:16px;font-weight:500;">프로필</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <span class="artboard-route">/profile</span>
+      </div>
+
+      <div class="connector">
+        <svg width="42" height="18" viewBox="0 0 42 18" fill="none"><line x1="0" y1="9" x2="32" y2="9" stroke="#bbb" stroke-width="1.5"/><polyline points="26,4 34,9 26,14" stroke="#bbb" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span class="connector-label">혜택계산 클릭</span>
+      </div>
+
+      <!-- ── Screen 6: 혜택 계산기 ── -->
+      <div class="artboard">
+        <span class="artboard-name">혜택 계산기</span>
+        <div class="sw">
+          <div class="si">
+            <div style="min-height:660px;background:#f9fafb;font-family:-apple-system,BlinkMacSystemFont,sans-serif;position:relative;padding-bottom:64px;">
+              <!-- Header -->
+              <div style="background:white;border-bottom:1px solid #e5e7eb;padding:0 24px;height:72px;display:flex;align-items:center;gap:16px;position:sticky;top:0;z-index:40;">
+                <div style="font-size:28px;color:#4b5563;">‹</div>
+                <div style="font-size:26px;font-weight:700;color:#111827;">혜택 계산기</div>
+              </div>
+              <div style="padding:16px 24px;display:flex;flex-direction:column;gap:16px;">
+                <!-- Type selector -->
+                <div style="background:white;border-radius:14px;padding:18px;box-shadow:0 1px 4px rgba(0,0,0,0.07);">
+                  <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;">
+                    <div style="border:2px solid #2563eb;background:#eff6ff;border-radius:10px;padding:12px;text-align:center;">
+                      <div style="font-size:16px;font-weight:700;color:#2563eb;">월 혜택</div>
+                    </div>
+                    <div style="border:1.5px solid #e5e7eb;border-radius:10px;padding:12px;text-align:center;">
+                      <div style="font-size:16px;font-weight:600;color:#6b7280;">육아휴직</div>
+                    </div>
+                    <div style="border:1.5px solid #e5e7eb;border-radius:10px;padding:12px;text-align:center;">
+                      <div style="font-size:16px;font-weight:600;color:#6b7280;">총 혜택</div>
+                    </div>
+                  </div>
+                </div>
+                <!-- Inputs -->
+                <div style="background:white;border-radius:14px;padding:22px;box-shadow:0 1px 4px rgba(0,0,0,0.07);display:flex;flex-direction:column;gap:14px;">
+                  <div>
+                    <div style="font-size:17px;font-weight:600;color:#374151;margin-bottom:8px;">자녀 수</div>
+                    <div style="border:1.5px solid #d1d5db;border-radius:8px;padding:12px 16px;font-size:18px;color:#111827;">2명</div>
+                  </div>
+                  <div>
+                    <div style="font-size:17px;font-weight:600;color:#374151;margin-bottom:8px;">월 소득</div>
+                    <div style="border:1.5px solid #d1d5db;border-radius:8px;padding:12px 16px;font-size:18px;color:#111827;">3,500,000원</div>
+                  </div>
+                  <div style="display:flex;align-items:center;gap:10px;">
+                    <div style="width:22px;height:22px;border-radius:4px;background:#2563eb;display:flex;align-items:center;justify-content:center;color:white;font-size:14px;">✓</div>
+                    <span style="font-size:18px;color:#111827;">맞벌이 가구</span>
+                  </div>
+                </div>
+                <!-- Calculate button -->
+                <div style="background:#2563eb;border-radius:12px;padding:18px;text-align:center;color:white;font-size:22px;font-weight:700;">계산하기</div>
+                <!-- Result card -->
+                <div style="background:linear-gradient(135deg,#3b82f6,#9333ea);border-radius:14px;padding:24px;color:white;">
+                  <div style="font-size:18px;font-weight:600;opacity:0.85;margin-bottom:16px;">예상 월 혜택 금액</div>
+                  <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+                    <div style="background:rgba(255,255,255,0.2);border-radius:10px;padding:14px;text-align:center;">
+                      <div style="font-size:14px;opacity:0.8;margin-bottom:4px;">아동수당</div>
+                      <div style="font-size:24px;font-weight:800;">20만원</div>
+                    </div>
+                    <div style="background:rgba(255,255,255,0.2);border-radius:10px;padding:14px;text-align:center;">
+                      <div style="font-size:14px;opacity:0.8;margin-bottom:4px;">양육수당</div>
+                      <div style="font-size:24px;font-weight:800;">15만원</div>
+                    </div>
+                  </div>
+                  <div style="margin-top:16px;background:rgba(255,255,255,0.15);border-radius:10px;padding:14px;text-align:center;">
+                    <div style="font-size:15px;opacity:0.8;margin-bottom:4px;">총 합계</div>
+                    <div style="font-size:34px;font-weight:800;">35만원/월</div>
+                  </div>
+                </div>
+              </div>
+              <!-- Bottom nav -->
+              <div style="position:absolute;bottom:0;left:0;right:0;background:white;border-top:1px solid #e5e7eb;height:64px;display:flex;align-items:center;justify-content:space-around;padding:0 8px;">
+                <div style="display:flex;flex-direction:column;align-items:center;gap:4px;flex:1;color:#6b7280;"><div style="font-size:28px;">🏠</div><div style="font-size:16px;">홈</div></div>
+                <div style="display:flex;flex-direction:column;align-items:center;gap:4px;flex:1;color:#6b7280;"><div style="font-size:28px;">📋</div><div style="font-size:16px;">정책</div></div>
+                <div style="display:flex;flex-direction:column;align-items:center;gap:4px;flex:1;color:#6b7280;"><div style="font-size:28px;">🔖</div><div style="font-size:16px;">즐겨찾기</div></div>
+                <div style="display:flex;flex-direction:column;align-items:center;gap:4px;flex:1;color:#6b7280;"><div style="font-size:28px;">✅</div><div style="font-size:16px;">체크</div></div>
+                <div style="display:flex;flex-direction:column;align-items:center;gap:4px;flex:1;color:#6b7280;"><div style="font-size:28px;">👤</div><div style="font-size:16px;">프로필</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <span class="artboard-route">/calculator</span>
+      </div>
+
+      <div class="connector">
+        <svg width="42" height="18" viewBox="0 0 42 18" fill="none"><line x1="0" y1="9" x2="32" y2="9" stroke="#bbb" stroke-width="1.5"/><polyline points="26,4 34,9 26,14" stroke="#bbb" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span class="connector-label">알림 확인</span>
+      </div>
+
+      <!-- ── Screen 7: 알림 ── -->
+      <div class="artboard">
+        <span class="artboard-name">알림</span>
+        <div class="sw">
+          <div class="si">
+            <div style="min-height:660px;background:#f9fafb;font-family:-apple-system,BlinkMacSystemFont,sans-serif;position:relative;padding-bottom:64px;">
+              <!-- Header -->
+              <div style="background:white;border-bottom:1px solid #e5e7eb;padding:0 24px;height:72px;display:flex;align-items:center;gap:16px;position:sticky;top:0;z-index:40;">
+                <div style="font-size:28px;color:#4b5563;">‹</div>
+                <div style="font-size:26px;font-weight:700;color:#111827;">알림</div>
+              </div>
+              <div style="padding:16px 24px;display:flex;flex-direction:column;gap:10px;">
+                <!-- Urgent -->
+                <div style="background:white;border-radius:12px;border-left:5px solid #ef4444;padding:18px 20px;box-shadow:0 1px 4px rgba(0,0,0,0.07);">
+                  <div style="display:flex;justify-content:space-between;align-items:start;margin-bottom:8px;">
+                    <div style="display:flex;align-items:center;gap:8px;">
+                      <div style="width:10px;height:10px;background:#3b82f6;border-radius:50%;"></div>
+                      <span style="font-size:13px;background:#fee2e2;color:#dc2626;padding:3px 10px;border-radius:6px;font-weight:600;">D-3 마감 임박!</span>
+                    </div>
+                    <span style="font-size:14px;color:#9ca3af;">방금 전</span>
+                  </div>
+                  <div style="font-size:19px;font-weight:700;color:#111827;margin-bottom:4px;">아동수당 신청 마감</div>
+                  <div style="font-size:15px;color:#6b7280;line-height:1.5;">아동수당 신청이 3일 후 마감됩니다. 지금 바로 신청하세요!</div>
+                </div>
+                <!-- Unread -->
+                <div style="background:white;border-radius:12px;border-left:5px solid #3b82f6;padding:18px 20px;box-shadow:0 1px 4px rgba(0,0,0,0.07);">
+                  <div style="display:flex;justify-content:space-between;align-items:start;margin-bottom:8px;">
+                    <div style="display:flex;align-items:center;gap:8px;">
+                      <div style="width:10px;height:10px;background:#3b82f6;border-radius:50%;"></div>
+                      <span style="font-size:13px;background:#dbeafe;color:#1d4ed8;padding:3px 10px;border-radius:6px;font-weight:600;">새 알림</span>
+                    </div>
+                    <span style="font-size:14px;color:#9ca3af;">1시간 전</span>
+                  </div>
+                  <div style="font-size:19px;font-weight:700;color:#111827;margin-bottom:4px;">새로운 정책이 추가되었어요</div>
+                  <div style="font-size:15px;color:#6b7280;line-height:1.5;margin-bottom:10px;">서울시 출산 장려금 정책이 새로 등록되었습니다.</div>
+                  <div style="display:flex;justify-content:flex-end;">
+                    <div style="border:1px solid #e5e7eb;border-radius:6px;padding:6px 14px;font-size:14px;color:#374151;">✓ 읽음 처리</div>
+                  </div>
+                </div>
+                <!-- Read -->
+                <div style="background:white;border-radius:12px;border-left:5px solid #e5e7eb;padding:18px 20px;box-shadow:0 1px 4px rgba(0,0,0,0.04);opacity:0.7;">
+                  <div style="display:flex;justify-content:space-between;align-items:start;margin-bottom:8px;">
+                    <span style="font-size:13px;background:#f3f4f6;color:#6b7280;padding:3px 10px;border-radius:6px;">읽음</span>
+                    <span style="font-size:14px;color:#9ca3af;">2일 전</span>
+                  </div>
+                  <div style="font-size:19px;font-weight:700;color:#374151;margin-bottom:4px;">프로필이 업데이트되었습니다</div>
+                  <div style="font-size:15px;color:#9ca3af;line-height:1.5;">거주지 정보가 성공적으로 저장되었습니다.</div>
+                </div>
+                <!-- Another unread -->
+                <div style="background:white;border-radius:12px;border-left:5px solid #3b82f6;padding:18px 20px;box-shadow:0 1px 4px rgba(0,0,0,0.07);">
+                  <div style="display:flex;justify-content:space-between;align-items:start;margin-bottom:8px;">
+                    <div style="display:flex;align-items:center;gap:8px;">
+                      <div style="width:10px;height:10px;background:#3b82f6;border-radius:50%;"></div>
+                      <span style="font-size:13px;background:#dbeafe;color:#1d4ed8;padding:3px 10px;border-radius:6px;font-weight:600;">새 알림</span>
+                    </div>
+                    <span style="font-size:14px;color:#9ca3af;">3일 전</span>
+                  </div>
+                  <div style="font-size:19px;font-weight:700;color:#111827;margin-bottom:4px;">D-14 육아휴직 급여 신청</div>
+                  <div style="font-size:15px;color:#6b7280;line-height:1.5;">육아휴직 급여 신청 마감이 14일 남았습니다.</div>
+                </div>
+              </div>
+              <!-- Bottom nav -->
+              <div style="position:absolute;bottom:0;left:0;right:0;background:white;border-top:1px solid #e5e7eb;height:64px;display:flex;align-items:center;justify-content:space-around;padding:0 8px;">
+                <div style="display:flex;flex-direction:column;align-items:center;gap:4px;flex:1;color:#6b7280;"><div style="font-size:28px;">🏠</div><div style="font-size:16px;">홈</div></div>
+                <div style="display:flex;flex-direction:column;align-items:center;gap:4px;flex:1;color:#6b7280;"><div style="font-size:28px;">📋</div><div style="font-size:16px;">정책</div></div>
+                <div style="display:flex;flex-direction:column;align-items:center;gap:4px;flex:1;color:#6b7280;"><div style="font-size:28px;">🔖</div><div style="font-size:16px;">즐겨찾기</div></div>
+                <div style="display:flex;flex-direction:column;align-items:center;gap:4px;flex:1;color:#6b7280;"><div style="font-size:28px;">✅</div><div style="font-size:16px;">체크</div></div>
+                <div style="display:flex;flex-direction:column;align-items:center;gap:4px;flex:1;color:#6b7280;"><div style="font-size:28px;">👤</div><div style="font-size:16px;">프로필</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <span class="artboard-route">/notifications</span>
+      </div>
+
+      <div class="connector">
+        <svg width="42" height="18" viewBox="0 0 42 18" fill="none"><line x1="0" y1="9" x2="32" y2="9" stroke="#bbb" stroke-width="1.5"/><polyline points="26,4 34,9 26,14" stroke="#bbb" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span class="connector-label">즐겨찾기</span>
+      </div>
+
+      <!-- ── Screen 8: 즐겨찾기 ── -->
+      <div class="artboard">
+        <span class="artboard-name">즐겨찾기</span>
+        <div class="sw">
+          <div class="si">
+            <div style="min-height:660px;background:#f9fafb;font-family:-apple-system,BlinkMacSystemFont,sans-serif;position:relative;padding-bottom:64px;">
+              <!-- Header -->
+              <div style="background:white;border-bottom:1px solid #e5e7eb;padding:0 24px;height:72px;display:flex;align-items:center;gap:16px;position:sticky;top:0;z-index:40;">
+                <div style="font-size:28px;color:#4b5563;">‹</div>
+                <div style="font-size:26px;font-weight:700;color:#111827;">즐겨찾기</div>
+              </div>
+              <div style="padding:16px 24px;display:flex;flex-direction:column;gap:12px;">
+                <!-- Card 1 -->
+                <div style="background:white;border-radius:14px;padding:20px;box-shadow:0 1px 4px rgba(0,0,0,0.07);">
+                  <div style="display:flex;justify-content:space-between;align-items:start;margin-bottom:10px;">
+                    <div style="display:flex;gap:8px;">
+                      <span style="font-size:13px;background:#dbeafe;color:#1d4ed8;padding:3px 10px;border-radius:6px;">중앙정부</span>
+                      <span style="font-size:13px;background:#f3f4f6;color:#374151;padding:3px 10px;border-radius:6px;">육아</span>
+                    </div>
+                    <div style="font-size:28px;color:#eab308;">🔖</div>
+                  </div>
+                  <div style="font-size:22px;font-weight:700;color:#111827;margin-bottom:6px;">아동수당</div>
+                  <div style="font-size:15px;color:#6b7280;margin-bottom:12px;line-height:1.5;">만 8세 미만 아동을 양육하는 가정에 매월 10만원 지급</div>
+                  <div style="display:flex;justify-content:space-between;align-items:center;">
+                    <span style="font-size:13px;background:#fee2e2;color:#dc2626;padding:4px 12px;border-radius:8px;font-weight:600;">D-3 마감임박</span>
+                    <div style="font-size:20px;color:#2563eb;">🔗</div>
+                  </div>
+                </div>
+                <!-- Card 2 -->
+                <div style="background:white;border-radius:14px;padding:20px;box-shadow:0 1px 4px rgba(0,0,0,0.07);">
+                  <div style="display:flex;justify-content:space-between;align-items:start;margin-bottom:10px;">
+                    <div style="display:flex;gap:8px;">
+                      <span style="font-size:13px;background:#f3e8ff;color:#7e22ce;padding:3px 10px;border-radius:6px;">지자체</span>
+                      <span style="font-size:13px;background:#f3f4f6;color:#374151;padding:3px 10px;border-radius:6px;">출산</span>
+                    </div>
+                    <div style="font-size:28px;color:#eab308;">🔖</div>
+                  </div>
+                  <div style="font-size:22px;font-weight:700;color:#111827;margin-bottom:6px;">출산 축하금</div>
+                  <div style="font-size:15px;color:#6b7280;margin-bottom:12px;line-height:1.5;">출생 신고 후 지자체별 차등 지급 (서울시 최대 200만원)</div>
+                  <div style="display:flex;justify-content:space-between;align-items:center;">
+                    <span style="font-size:13px;background:#dcfce7;color:#15803d;padding:4px 12px;border-radius:8px;font-weight:600;">상시 신청</span>
+                    <div style="font-size:20px;color:#2563eb;">🔗</div>
+                  </div>
+                </div>
+                <!-- Card 3 -->
+                <div style="background:white;border-radius:14px;padding:20px;box-shadow:0 1px 4px rgba(0,0,0,0.07);">
+                  <div style="display:flex;justify-content:space-between;align-items:start;margin-bottom:10px;">
+                    <div style="display:flex;gap:8px;">
+                      <span style="font-size:13px;background:#dbeafe;color:#1d4ed8;padding:3px 10px;border-radius:6px;">중앙정부</span>
+                      <span style="font-size:13px;background:#f3f4f6;color:#374151;padding:3px 10px;border-radius:6px;">육아</span>
+                    </div>
+                    <div style="font-size:28px;color:#eab308;">🔖</div>
+                  </div>
+                  <div style="font-size:22px;font-weight:700;color:#111827;margin-bottom:6px;">육아휴직 급여</div>
+                  <div style="font-size:15px;color:#6b7280;margin-bottom:12px;line-height:1.5;">육아휴직 기간 통상임금의 80% 지급 (상한액 150만원)</div>
+                  <div style="display:flex;justify-content:space-between;align-items:center;">
+                    <span style="font-size:13px;background:#fef3c7;color:#b45309;padding:4px 12px;border-radius:8px;font-weight:600;">D-14</span>
+                    <div style="font-size:20px;color:#2563eb;">🔗</div>
+                  </div>
+                </div>
+              </div>
+              <!-- Bottom nav -->
+              <div style="position:absolute;bottom:0;left:0;right:0;background:white;border-top:1px solid #e5e7eb;height:64px;display:flex;align-items:center;justify-content:space-around;padding:0 8px;">
+                <div style="display:flex;flex-direction:column;align-items:center;gap:4px;flex:1;color:#6b7280;"><div style="font-size:28px;">🏠</div><div style="font-size:16px;">홈</div></div>
+                <div style="display:flex;flex-direction:column;align-items:center;gap:4px;flex:1;color:#6b7280;"><div style="font-size:28px;">📋</div><div style="font-size:16px;">정책</div></div>
+                <div style="display:flex;flex-direction:column;align-items:center;gap:4px;flex:1;color:#2563eb;"><div style="font-size:28px;">🔖</div><div style="font-size:16px;font-weight:500;">즐겨찾기</div></div>
+                <div style="display:flex;flex-direction:column;align-items:center;gap:4px;flex:1;color:#6b7280;"><div style="font-size:28px;">✅</div><div style="font-size:16px;">체크</div></div>
+                <div style="display:flex;flex-direction:column;align-items:center;gap:4px;flex:1;color:#6b7280;"><div style="font-size:28px;">👤</div><div style="font-size:16px;">프로필</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <span class="artboard-route">/bookmarks</span>
+      </div>
+
+    </div>
+  </div><!-- end row 2 -->
+
+
+  <!-- ========================= ROW 3: 커뮤니티 플로우 ========================= -->
+  <div class="flow-row">
+    <div class="row-label-col"><span>커뮤니티 플로우</span></div>
+    <div class="screens-row">
+
+      <!-- ── Screen 9: 체크리스트 ── -->
+      <div class="artboard">
+        <span class="artboard-name">체크리스트</span>
+        <div class="sw">
+          <div class="si">
+            <div style="min-height:660px;background:#f9fafb;font-family:-apple-system,BlinkMacSystemFont,sans-serif;position:relative;padding-bottom:64px;">
+              <!-- Header (실제 소스: 뒤로가기 + 제목 + 추가 버튼) -->
+              <div style="background:white;border-bottom:1px solid #e5e7eb;padding:0 24px;height:72px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:40;">
+                <div style="display:flex;align-items:center;gap:16px;">
+                  <div style="font-size:28px;color:#4b5563;">‹</div>
+                  <div style="font-size:26px;font-weight:700;color:#111827;">체크리스트</div>
+                </div>
+                <div style="display:flex;align-items:center;gap:8px;background:#2563eb;color:white;padding:8px 16px;border-radius:10px;font-size:16px;font-weight:600;">
+                  <span style="font-size:22px;font-weight:300;">+</span><span>추가</span>
+                </div>
+              </div>
+              <div style="padding:16px 24px;display:flex;flex-direction:column;gap:16px;">
+                <!-- 임신 중 체크리스트 섹션 -->
+                <div style="background:white;border-radius:14px;padding:22px;box-shadow:0 1px 4px rgba(0,0,0,0.07);">
+                  <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;">
+                    <span style="font-size:22px;color:#ec4899;">⚠</span>
+                    <div style="font-size:20px;font-weight:700;color:#111827;">임신 12주 체크리스트</div>
+                  </div>
+                  <!-- 체크 항목 — 미완료 (긴급) -->
+                  <div style="display:flex;align-items:start;gap:12px;padding:14px;border-radius:10px;border:1.5px solid #d1d5db;background:white;margin-bottom:10px;">
+                    <div style="margin-top:2px;font-size:22px;color:#9ca3af;">○</div>
+                    <div style="flex:1;">
+                      <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
+                        <span style="font-size:17px;font-weight:500;color:#111827;">산전 진료 예약</span>
+                        <span style="font-size:12px;background:#fef2f2;color:#dc2626;padding:2px 8px;border-radius:4px;">긴급</span>
+                      </div>
+                      <div style="font-size:14px;color:#6b7280;">1분기 정기 검진 일정 잡기</div>
+                      <div style="font-size:12px;color:#9ca3af;margin-top:4px;">📅 2025-06-01</div>
+                    </div>
+                  </div>
+                  <!-- 체크 항목 — 미완료 (중요) -->
+                  <div style="display:flex;align-items:start;gap:12px;padding:14px;border-radius:10px;border:1.5px solid #d1d5db;background:white;margin-bottom:10px;">
+                    <div style="margin-top:2px;font-size:22px;color:#9ca3af;">○</div>
+                    <div style="flex:1;">
+                      <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
+                        <span style="font-size:17px;font-weight:500;color:#111827;">엽산제 복용 시작</span>
+                        <span style="font-size:12px;background:#fff7ed;color:#c2410c;padding:2px 8px;border-radius:4px;">중요</span>
+                      </div>
+                      <div style="font-size:14px;color:#6b7280;">임신 초기 영양 관리</div>
+                    </div>
+                  </div>
+                  <!-- 체크 항목 — 완료 -->
+                  <div style="display:flex;align-items:start;gap:12px;padding:14px;border-radius:10px;border:1.5px solid #e5e7eb;background:#f9fafb;">
+                    <div style="margin-top:2px;font-size:22px;color:#059669;">✓</div>
+                    <div style="flex:1;">
+                      <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
+                        <span style="font-size:17px;font-weight:500;color:#9ca3af;text-decoration:line-through;">임신 확인 검사</span>
+                      </div>
+                      <div style="font-size:14px;color:#9ca3af;">임신 확인 초음파 검사 완료</div>
+                    </div>
+                  </div>
+                </div>
+                <!-- 출산 후 체크리스트 섹션 -->
+                <div style="background:white;border-radius:14px;padding:22px;box-shadow:0 1px 4px rgba(0,0,0,0.07);">
+                  <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;">
+                    <span style="font-size:22px;color:#2563eb;">⚠</span>
+                    <div style="font-size:20px;font-weight:700;color:#111827;">출산 후 체크리스트</div>
+                    <span style="font-size:15px;color:#6b7280;">(최연소: 생후 3개월)</span>
+                  </div>
+                  <!-- 미완료 항목 -->
+                  <div style="display:flex;align-items:start;gap:12px;padding:14px;border-radius:10px;border:1.5px solid #d1d5db;background:white;margin-bottom:10px;">
+                    <div style="margin-top:2px;font-size:22px;color:#9ca3af;">○</div>
+                    <div style="flex:1;">
+                      <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
+                        <span style="font-size:17px;font-weight:500;color:#111827;">아동수당 신청</span>
+                        <span style="font-size:12px;background:#fef2f2;color:#dc2626;padding:2px 8px;border-radius:4px;">긴급</span>
+                      </div>
+                      <div style="font-size:14px;color:#6b7280;">출생일로부터 60일 이내 신청</div>
+                      <div style="font-size:12px;color:#9ca3af;margin-top:4px;">📅 2025-05-30</div>
+                    </div>
+                  </div>
+                  <!-- 완료 항목 -->
+                  <div style="display:flex;align-items:start;gap:12px;padding:14px;border-radius:10px;border:1.5px solid #e5e7eb;background:#f9fafb;">
+                    <div style="margin-top:2px;font-size:22px;color:#059669;">✓</div>
+                    <div style="flex:1;">
+                      <div style="display:flex;align-items:center;gap:8px;">
+                        <span style="font-size:17px;font-weight:500;color:#9ca3af;text-decoration:line-through;">출생신고</span>
+                      </div>
+                      <div style="font-size:14px;color:#9ca3af;">출산 후 1개월 이내 완료</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- Bottom nav -->
+              <div style="position:absolute;bottom:0;left:0;right:0;background:white;border-top:1px solid #e5e7eb;height:64px;display:flex;align-items:center;justify-content:space-around;padding:0 8px;">
+                <div style="display:flex;flex-direction:column;align-items:center;gap:4px;flex:1;color:#6b7280;"><div style="font-size:28px;">🏠</div><div style="font-size:16px;">홈</div></div>
+                <div style="display:flex;flex-direction:column;align-items:center;gap:4px;flex:1;color:#6b7280;"><div style="font-size:28px;">📋</div><div style="font-size:16px;">정책</div></div>
+                <div style="display:flex;flex-direction:column;align-items:center;gap:4px;flex:1;color:#6b7280;"><div style="font-size:28px;">🔖</div><div style="font-size:16px;">즐겨찾기</div></div>
+                <div style="display:flex;flex-direction:column;align-items:center;gap:4px;flex:1;color:#2563eb;"><div style="font-size:28px;">✅</div><div style="font-size:16px;font-weight:500;">체크</div></div>
+                <div style="display:flex;flex-direction:column;align-items:center;gap:4px;flex:1;color:#6b7280;"><div style="font-size:28px;">👤</div><div style="font-size:16px;">프로필</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <span class="artboard-route">/checklist</span>
+      </div>
+
+      <div class="connector">
+        <svg width="42" height="18" viewBox="0 0 42 18" fill="none"><line x1="0" y1="9" x2="32" y2="9" stroke="#bbb" stroke-width="1.5"/><polyline points="26,4 34,9 26,14" stroke="#bbb" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span class="connector-label">+ 추가 클릭</span>
+      </div>
+
+      <!-- ── Screen 9-M: 체크리스트 항목 추가 모달 ── -->
+      <div class="artboard">
+        <span class="artboard-name">항목 추가 모달</span>
+        <div class="sw">
+          <div class="si">
+            <div style="min-height:660px;background:rgba(0,0,0,0.5);font-family:-apple-system,BlinkMacSystemFont,sans-serif;position:relative;display:flex;align-items:center;justify-content:center;">
+              <!-- Modal overlay -->
+              <div style="background:white;border-radius:16px;padding:24px;width:520px;max-height:600px;overflow-y:auto;">
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
+                  <div style="font-size:24px;font-weight:700;color:#111827;">체크리스트 항목 추가</div>
+                  <div style="font-size:28px;color:#9ca3af;">✕</div>
+                </div>
+                <!-- 유형 선택 -->
+                <div style="margin-bottom:16px;">
+                  <div style="font-size:16px;font-weight:500;color:#374151;margin-bottom:8px;">유형</div>
+                  <div style="border:1.5px solid #d1d5db;border-radius:8px;padding:12px 16px;font-size:18px;color:#111827;display:flex;justify-content:space-between;align-items:center;">
+                    <span>임신 중</span><span style="color:#9ca3af;">▾</span>
+                  </div>
+                </div>
+                <!-- 제목 입력 -->
+                <div style="margin-bottom:16px;">
+                  <div style="font-size:16px;font-weight:500;color:#374151;margin-bottom:8px;">제목 *</div>
+                  <div style="border:1.5px solid #2563eb;border-radius:8px;padding:12px 16px;font-size:18px;color:#9ca3af;box-shadow:0 0 0 3px #bfdbfe;">예: 산전 진료 예약</div>
+                </div>
+                <!-- 설명 -->
+                <div style="margin-bottom:16px;">
+                  <div style="font-size:16px;font-weight:500;color:#374151;margin-bottom:8px;">설명 (선택사항)</div>
+                  <div style="border:1.5px solid #d1d5db;border-radius:8px;padding:12px 16px;font-size:17px;color:#9ca3af;height:80px;">상세 설명을 입력하세요</div>
+                </div>
+                <!-- 카테고리 -->
+                <div style="margin-bottom:16px;">
+                  <div style="font-size:16px;font-weight:500;color:#374151;margin-bottom:8px;">카테고리 (선택사항)</div>
+                  <div style="border:1.5px solid #d1d5db;border-radius:8px;padding:12px 16px;font-size:18px;color:#9ca3af;display:flex;justify-content:space-between;align-items:center;">
+                    <span>선택하세요</span><span style="color:#9ca3af;">▾</span>
+                  </div>
+                </div>
+                <!-- 우선순위 -->
+                <div style="margin-bottom:16px;">
+                  <div style="font-size:16px;font-weight:500;color:#374151;margin-bottom:8px;">우선순위</div>
+                  <div style="border:1.5px solid #d1d5db;border-radius:8px;padding:12px 16px;font-size:18px;color:#111827;display:flex;justify-content:space-between;align-items:center;">
+                    <span>중요</span><span style="color:#9ca3af;">▾</span>
+                  </div>
+                </div>
+                <!-- 마감일 -->
+                <div style="margin-bottom:24px;">
+                  <div style="font-size:16px;font-weight:500;color:#374151;margin-bottom:8px;">마감일 (선택사항)</div>
+                  <div style="border:1.5px solid #d1d5db;border-radius:8px;padding:12px 16px;font-size:18px;color:#9ca3af;">날짜 선택</div>
+                </div>
+                <!-- 버튼 -->
+                <div style="display:flex;gap:12px;">
+                  <div style="flex:1;border:1.5px solid #d1d5db;border-radius:10px;padding:14px;text-align:center;font-size:18px;font-weight:600;color:#374151;">취소</div>
+                  <div style="flex:1;background:#2563eb;border-radius:10px;padding:14px;text-align:center;font-size:18px;font-weight:700;color:white;">추가하기</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <span class="artboard-route">/checklist (모달)</span>
+      </div>
+
+      <div class="connector">
+        <svg width="42" height="18" viewBox="0 0 42 18" fill="none"><line x1="0" y1="9" x2="32" y2="9" stroke="#bbb" stroke-width="1.5"/><polyline points="26,4 34,9 26,14" stroke="#bbb" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span class="connector-label">리뷰 보기</span>
+      </div>
+
+      <!-- ── Screen 10: 리뷰 & 꿀팁 ── -->
+      <div class="artboard">
+        <span class="artboard-name">정책 리뷰 & 꿀팁</span>
+        <div class="sw">
+          <div class="si">
+            <div style="min-height:660px;background:#f9fafb;font-family:-apple-system,BlinkMacSystemFont,sans-serif;position:relative;padding-bottom:64px;">
+              <!-- Header -->
+              <div style="background:white;border-bottom:1px solid #e5e7eb;padding:0 24px;height:72px;display:flex;align-items:center;gap:16px;position:sticky;top:0;z-index:40;">
+                <div style="font-size:28px;color:#4b5563;">‹</div>
+                <div style="font-size:26px;font-weight:700;color:#111827;">정책 리뷰 &amp; 꿀팁</div>
+              </div>
+              <div style="padding:16px 24px;display:flex;flex-direction:column;gap:14px;">
+                <!-- Filter pills -->
+                <div style="background:white;border-radius:12px;padding:14px 18px;box-shadow:0 1px 4px rgba(0,0,0,0.07);">
+                  <div style="display:flex;gap:10px;">
+                    <span style="background:#2563eb;color:white;padding:8px 18px;border-radius:20px;font-size:16px;font-weight:600;white-space:nowrap;">전체</span>
+                    <span style="background:#f3f4f6;color:#374151;padding:8px 18px;border-radius:20px;font-size:16px;white-space:nowrap;">아동수당</span>
+                    <span style="background:#f3f4f6;color:#374151;padding:8px 18px;border-radius:20px;font-size:16px;white-space:nowrap;">출산 축하금</span>
+                    <span style="background:#f3f4f6;color:#374151;padding:8px 18px;border-radius:20px;font-size:16px;white-space:nowrap;">육아휴직</span>
+                  </div>
+                </div>
+                <!-- Write review button -->
+                <div style="background:#2563eb;border-radius:12px;padding:16px;text-align:center;color:white;font-size:20px;font-weight:700;">✏️ 리뷰 작성하기</div>
+                <!-- Review card 1 -->
+                <div style="background:white;border-radius:14px;padding:22px;box-shadow:0 1px 4px rgba(0,0,0,0.07);">
+                  <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+                    <div style="font-size:19px;font-weight:700;color:#111827;">정말 도움이 되었어요!</div>
+                    <span style="font-size:13px;background:#dcfce7;color:#15803d;padding:3px 10px;border-radius:6px;">검증됨</span>
+                  </div>
+                  <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+                    <span style="font-size:15px;color:#6b7280;">김맘</span>
+                    <span style="color:#d1d5db;">•</span>
+                    <span style="font-size:15px;color:#6b7280;">아동수당</span>
+                    <div style="display:flex;gap:2px;margin-left:4px;">
+                      <span style="font-size:18px;color:#eab308;">★★★★★</span>
+                    </div>
+                  </div>
+                  <div style="font-size:16px;color:#374151;margin-bottom:12px;line-height:1.5;">신청 절차가 생각보다 간단했고, 매달 꾸준히 받을 수 있어서 좋습니다.</div>
+                  <div style="background:#eff6ff;border-left:4px solid #2563eb;border-radius:0 8px 8px 0;padding:12px 14px;margin-bottom:10px;">
+                    <div style="font-size:15px;font-weight:700;color:#1e3a8a;margin-bottom:4px;">💡 꿀팁</div>
+                    <div style="font-size:14px;color:#1d4ed8;line-height:1.4;">온라인 신청이 훨씬 빠르고 편해요. 주민등록등본만 준비하면 됩니다.</div>
+                  </div>
+                  <div style="display:flex;justify-content:space-between;align-items:center;padding-top:12px;border-top:1px solid #e5e7eb;">
+                    <span style="font-size:14px;color:#9ca3af;">2024.12.15</span>
+                    <div style="display:flex;align-items:center;gap:6px;color:#6b7280;">
+                      <span style="font-size:18px;">👍</span>
+                      <span style="font-size:15px;">도움됨 12</span>
+                    </div>
+                  </div>
+                </div>
+                <!-- Review card 2 -->
+                <div style="background:white;border-radius:14px;padding:22px;box-shadow:0 1px 4px rgba(0,0,0,0.07);">
+                  <div style="font-size:19px;font-weight:700;color:#111827;margin-bottom:10px;">좋은 정책이에요</div>
+                  <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+                    <span style="font-size:15px;color:#6b7280;">이맘</span>
+                    <span style="color:#d1d5db;">•</span>
+                    <span style="font-size:15px;color:#6b7280;">출산 축하금</span>
+                    <div style="display:flex;gap:2px;margin-left:4px;">
+                      <span style="font-size:18px;color:#eab308;">★★★★</span><span style="font-size:18px;color:#d1d5db;">★</span>
+                    </div>
+                  </div>
+                  <div style="font-size:16px;color:#374151;margin-bottom:12px;line-height:1.5;">둘째 출산 축하금을 받았는데 생각보다 금액이 커서 놀랐어요.</div>
+                  <div style="background:#eff6ff;border-left:4px solid #2563eb;border-radius:0 8px 8px 0;padding:12px 14px;">
+                    <div style="font-size:15px;font-weight:700;color:#1e3a8a;margin-bottom:4px;">💡 꿀팁</div>
+                    <div style="font-size:14px;color:#1d4ed8;line-height:1.4;">출생신고 후 1년 이내에 신청해야 하니 미리 준비하세요!</div>
+                  </div>
+                  <div style="display:flex;justify-content:space-between;align-items:center;padding-top:12px;border-top:1px solid #e5e7eb;margin-top:10px;">
+                    <span style="font-size:14px;color:#9ca3af;">2024.12.10</span>
+                    <div style="display:flex;align-items:center;gap:6px;color:#6b7280;">
+                      <span style="font-size:18px;">👍</span>
+                      <span style="font-size:15px;">도움됨 8</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- Bottom nav -->
+              <div style="position:absolute;bottom:0;left:0;right:0;background:white;border-top:1px solid #e5e7eb;height:64px;display:flex;align-items:center;justify-content:space-around;padding:0 8px;">
+                <div style="display:flex;flex-direction:column;align-items:center;gap:4px;flex:1;color:#6b7280;"><div style="font-size:28px;">🏠</div><div style="font-size:16px;">홈</div></div>
+                <div style="display:flex;flex-direction:column;align-items:center;gap:4px;flex:1;color:#6b7280;"><div style="font-size:28px;">📋</div><div style="font-size:16px;">정책</div></div>
+                <div style="display:flex;flex-direction:column;align-items:center;gap:4px;flex:1;color:#6b7280;"><div style="font-size:28px;">🔖</div><div style="font-size:16px;">즐겨찾기</div></div>
+                <div style="display:flex;flex-direction:column;align-items:center;gap:4px;flex:1;color:#6b7280;"><div style="font-size:28px;">✅</div><div style="font-size:16px;">체크</div></div>
+                <div style="display:flex;flex-direction:column;align-items:center;gap:4px;flex:1;color:#6b7280;"><div style="font-size:28px;">👤</div><div style="font-size:16px;">프로필</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <span class="artboard-route">/reviews</span>
+      </div>
+
+    </div>
+  </div><!-- end row 3 -->
+
+</div><!-- end canvas -->
+</body>
+</html>
